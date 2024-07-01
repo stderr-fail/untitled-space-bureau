@@ -21,7 +21,7 @@ class PrintText : Label() {
 
 	@RegisterFunction
 	override fun _process(delta: Double) {
-		text = "count: ${count++}"
+		text = "count zzz: ${count++}"
 
 	}
 }

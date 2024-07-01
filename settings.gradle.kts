@@ -1,8 +1,11 @@
 rootProject.name = "untitled-space-bureau"
 
+include("solarsystem")
+include("lib")
 include("godot")
 
 pluginManagement {
+
   repositories {
     mavenLocal()
     mavenCentral()

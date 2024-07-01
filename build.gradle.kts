@@ -1,7 +1,10 @@
+val godotKotlinVersion by extra("0.9.1-4.2.2")
+
 plugins {
   java
   kotlin("jvm") version "1.9.23"
 }
+
 
 tasks {
   withType<JavaCompile> {

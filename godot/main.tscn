@@ -1,24 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://bc08dhoyyn3kv"]
+[gd_scene load_steps=5 format=3 uid="uid://bc08dhoyyn3kv"]
 
-[ext_resource type="Script" path="res://scripts/godot/PrintText.gdj" id="1_s70mg"]
+[ext_resource type="Script" path="res://scripts/dependencies/lib/fail/stderr/usb/SolarSystemNode3D.gdj" id="1_ndq8v"]
 
-[node name="Root" type="Control"]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_madtg"]
+albedo_color = Color(1, 0.772549, 0, 1)
 
-[node name="Java GDJ" type="Label" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 6
-size_flags_vertical = 6
-horizontal_alignment = 1
-vertical_alignment = 1
-script = ExtResource("1_s70mg")
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jc0y7"]
+albedo_color = Color(8.8125e-07, 0.692018, 0.228299, 1)
+
+[sub_resource type="Environment" id="Environment_6cwqa"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+
+[node name="SolarSystem" type="Node3D"]
+script = ExtResource("1_ndq8v")
+
+[node name="Sun" type="CSGSphere3D" parent="."]
+radius = 4.0
+material = SubResource("StandardMaterial3D_madtg")
+
+[node name="Earth" type="CSGSphere3D" parent="Sun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 10, 10)
+radius = 2.0
+material = SubResource("StandardMaterial3D_jc0y7")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6cwqa")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, -5.17882e-16, 3.05056e-16, 3.05056e-16, 0.87462, 0.48481, -5.17882e-16, -0.48481, 0.87462, 2.08165e-12, 100, 220)
