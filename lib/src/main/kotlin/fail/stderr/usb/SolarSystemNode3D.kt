@@ -38,12 +38,12 @@ class SolarSystemNode3D : Node3D() {
 //    GD.print("process")
     time += delta
 
-    sim.next(time, 3600.0) // 1h per second
+    sim.next(time, 3600.0 * 24.0 * 7 * 4) // 1h per second
 
     sim.earthVec?.let {
       val modifiedVec = it.div(1000000000.0)
 //      GD.print("moving earth to ${modifiedVec}")
-      earth.position.lerp(modifiedVec, time * 3600.0)
+      earth.position = earth.position.lerp(modifiedVec, 1.0 )
     }
 
 

@@ -52,8 +52,8 @@ class SolarSystemSim {
 
     val settings = PropagationSettings(
       positionTolerance = 10.0,
-      minStep = Duration.ofSeconds(1L).toSeconds().toDouble(),
-      maxStep = Duration.ofSeconds(1L).toSeconds().toDouble(),
+      minStep = Duration.ofDays(7L).toSeconds().toDouble(),
+      maxStep = Duration.ofDays(7L).toSeconds().toDouble(),
 //      propagationType = OrbitType.CARTESIAN,
       propagationType = OrbitType.CARTESIAN,
     )
@@ -88,7 +88,7 @@ class SolarSystemSim {
 
     earthPropagator.setStepHandler(settings.minStep, buildStepHandler("earth", earthVectors))
 
-    earthPropagator.propagate(startDate, startDate.shiftedBy(1L, TimeUnit.SECONDS))
+    earthPropagator.propagate(startDate, startDate.shiftedBy(168L, TimeUnit.HOURS))
 
 
     GD.print("init done")

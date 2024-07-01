@@ -20,7 +20,7 @@ radius = 4.0
 material = SubResource("StandardMaterial3D_madtg")
 
 [node name="Earth" type="CSGSphere3D" parent="Sun"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 10, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33, 2.08165e-12, 143)
 radius = 2.0
 material = SubResource("StandardMaterial3D_jc0y7")
 
