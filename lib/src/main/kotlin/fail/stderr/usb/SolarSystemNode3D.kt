@@ -49,4 +49,9 @@ class SolarSystemNode3D : Node3D() {
 
   }
 
+  @RegisterFunction
+  fun speedChanged(value: Int) {
+    GD.print("kt speed changed: ${value}")
+  }
+
 }

@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bc08dhoyyn3kv"]
+[gd_scene load_steps=7 format=3 uid="uid://bc08dhoyyn3kv"]
 
 [ext_resource type="Script" path="res://scripts/dependencies/lib/fail/stderr/usb/SolarSystemNode3D.gdj" id="1_ndq8v"]
+[ext_resource type="PackedScene" uid="uid://bm70ukdgodoue" path="res://ui.tscn" id="2_55vgb"]
+[ext_resource type="Script" path="res://ui.gd" id="3_3uqua"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_madtg"]
 albedo_color = Color(1, 0.772549, 0, 1)
@@ -29,3 +31,6 @@ environment = SubResource("Environment_6cwqa")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, -5.17882e-16, 3.05056e-16, 3.05056e-16, 0.87462, 0.48481, -5.17882e-16, -0.48481, 0.87462, 2.08165e-12, 100, 220)
+
+[node name="UI" parent="." instance=ExtResource("2_55vgb")]
+script = ExtResource("3_3uqua")
