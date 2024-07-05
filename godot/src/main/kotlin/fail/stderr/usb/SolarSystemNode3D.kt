@@ -29,8 +29,9 @@ class SolarSystemNode3D : Node3D() {
   var speed: Int = 1
 
   lateinit var endDate: AbsoluteDate
+  lateinit var accumulatingDate: AbsoluteDate
   lateinit var initialDate: AbsoluteDate
-  var accumulatedMillis: Long = 0L
+  var accumulatedSeconds: Double = 0.0
 
 
   @RegisterFunction
@@ -49,6 +50,7 @@ class SolarSystemNode3D : Node3D() {
 
       initialDate = OrbitalParams.COMMON_START_DATE.shiftedBy(2L, TimeUnit.DAYS)
       endDate = initialDate
+      accumulatingDate = endDate
 
       GD.print("ready done3")
     } catch (e: Exception) {
@@ -73,32 +75,53 @@ class SolarSystemNode3D : Node3D() {
 //      GD.print("process")
       time += delta
 
-      rollingTime += delta
-      if (rollingTime > 1.0) {
-        rollingTime = rollingTime % 1
-        GD.print("rolled over rollingTime=${rollingTime}")
-      }
+//      val deltaMillis = delta * 1000.0
+      var deltaSeconds = delta
+      deltaSeconds *= speed
 
-      val deltaMillis = Math.floor(delta * 1000).toLong()
-//      var scaledSeconds = Math.floor(rollingTime * speed).toLong()
-//      var scaledSeconds = (rollingTime * speed).toLong()
-      var scaledMillis = deltaMillis * speed
+      accumulatedSeconds += deltaSeconds
+      if (accumulatedSeconds >= 1.0) {
 
-      accumulatedMillis += scaledMillis
+        val shiftBySeconds = Math.floor(accumulatedSeconds)
 
-      if (accumulatedMillis >= 1000) {
+        accumulatedSeconds %= 1.0
 
-        var nextEndDate = endDate.shiftedBy(accumulatedMillis, TimeUnit.MILLISECONDS)
-        if (nextEndDate.isAfter(endDate)) {
-//        GD.print("${Instant.now()} :: [t=${time}] [nDays=${numDays}] moving endDate ${endDate} to ${nextEndDate}")
-          endDate = nextEndDate
-          accumulatedMillis = (accumulatedMillis % 1000) * speed
-          sim.next(endDate) // 1h per second
-          dateLabel.text = "Date: ${endDate}"
+        endDate = endDate.shiftedBy(shiftBySeconds.toLong(), TimeUnit.SECONDS)
+        dateLabel.text = "Date: ${endDate}"
+        sim.next(endDate)
 
-        }
 
       }
+
+
+
+//
+//      rollingTime += delta
+//      if (rollingTime > 1.0) {
+//        rollingTime = rollingTime % 1
+//        GD.print("rolled over rollingTime=${rollingTime}")
+//      }
+//
+////      val deltaMillis = Math.floor(delta * 1000).toLong()
+////      var scaledSeconds = Math.floor(rollingTime * speed).toLong()
+////      var scaledSeconds = (rollingTime * speed).toLong()
+////      var scaledMillis = deltaMillis * speed
+//
+//      accumulatedMillis += scaledMillis
+//
+//      if (accumulatedMillis >= 1000) {
+//
+//        var nextEndDate = endDate.shiftedBy(accumulatedMillis, TimeUnit.MILLISECONDS)
+//        if (nextEndDate.isAfter(endDate)) {
+////        GD.print("${Instant.now()} :: [t=${time}] [nDays=${numDays}] moving endDate ${endDate} to ${nextEndDate}")
+//          endDate = nextEndDate
+//          accumulatedMillis = (accumulatedMillis % 1000) * speed
+//          sim.next(endDate) // 1h per second
+//          dateLabel.text = "Date: ${endDate}"
+//
+//        }
+//
+//      }
 
 
 //      val lerpWeight = 1 / 120.0 * delta
@@ -111,7 +134,7 @@ class SolarSystemNode3D : Node3D() {
       }
 
       sim.moonVec?.let {
-        val modifiedVec = it.div(1000000000.0) * 20
+        val modifiedVec = it.div(1000000000.0) * 10
 //      GD.print("moving earth to ${modifiedVec}")
         moon.position = moon.position.lerp(modifiedVec, lerpWeight)
       }
