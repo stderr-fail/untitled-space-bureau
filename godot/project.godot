@@ -22,7 +22,7 @@ settings/stdout/print_fps=true
 
 [display]
 
-window/size/viewport_width=1500
+window/size/viewport_width=1700
 window/size/viewport_height=1500
 
 [editor]

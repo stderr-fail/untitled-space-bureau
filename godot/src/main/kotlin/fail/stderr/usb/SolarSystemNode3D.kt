@@ -3,6 +3,7 @@ package fail.stderr.usb
 import fail.stderr.usb.sim.OrbitalParams
 import fail.stderr.usb.sim.SolarSystemSim
 import godot.CSGSphere3D
+import godot.Label
 import godot.Node3D
 import godot.annotation.RegisterClass
 import godot.annotation.RegisterFunction
@@ -19,10 +20,12 @@ class SolarSystemNode3D : Node3D() {
   lateinit var earth: CSGSphere3D
   lateinit var moon: CSGSphere3D
   lateinit var mercury: CSGSphere3D
+  lateinit var dateLabel: Label
 
   lateinit var sim: SolarSystemSim
 
   var time: Double = 0.0
+  var rollingTime: Double = 0.0
   var speed: Int = 1
 
   lateinit var endDate: AbsoluteDate
@@ -38,6 +41,7 @@ class SolarSystemNode3D : Node3D() {
       earth = getNode("Sun/Earth".asNodePath()) as CSGSphere3D
       moon = getNode("Sun/Earth/Moon".asNodePath()) as CSGSphere3D
       mercury = getNode("Sun/Mercury".asNodePath()) as CSGSphere3D
+      dateLabel = getNode("UI/ColorRect/MarginContainer/VBoxContainer/DateContainer/DateLabel".asNodePath()) as Label
 
       sim = SolarSystemSim(speed = speed)
       sim.prep()
@@ -68,32 +72,44 @@ class SolarSystemNode3D : Node3D() {
 //      GD.print("process")
       time += delta
 
-      var numDays = Math.floor(time * 14L).toLong()
+      rollingTime += delta
+      if (rollingTime > 1.0) {
+        rollingTime = rollingTime % 1
+        GD.print("rolled over rollingTime=${rollingTime}")
+      }
 
-      var nextEndDate = initialDate.shiftedBy(numDays, TimeUnit.DAYS)
+//      var scaledSeconds = Math.floor(rollingTime * speed).toLong()
+//      var scaledSeconds = (rollingTime * speed).toLong()
+      var scaledSeconds = Math.ceil((60 * delta) * speed).toLong()
+
+      var nextEndDate = endDate.shiftedBy(scaledSeconds, TimeUnit.SECONDS)
       if (nextEndDate.isAfter(endDate)) {
 //        GD.print("${Instant.now()} :: [t=${time}] [nDays=${numDays}] moving endDate ${endDate} to ${nextEndDate}")
         endDate = nextEndDate
         sim.next(endDate) // 1h per second
+        dateLabel.text = "Date: ${endDate}"
 
       }
+
+//      val lerpWeight = 1 / 120.0 * delta
+      val lerpWeight = delta / (1 / 120.0)
 
       sim.earthVec?.let {
         val modifiedVec = it.div(1000000000.0)
 //      GD.print("moving earth to ${modifiedVec}")
-        earth.position = earth.position.lerp(modifiedVec, 1 / 120.0)
+        earth.position = earth.position.lerp(modifiedVec, lerpWeight)
       }
 
       sim.moonVec?.let {
         val modifiedVec = it.div(1000000000.0) * 20
 //      GD.print("moving earth to ${modifiedVec}")
-        moon.position = moon.position.lerp(modifiedVec, 1 / 120.0)
+        moon.position = moon.position.lerp(modifiedVec, lerpWeight)
       }
 
       sim.mercuryVec?.let {
         val modifiedVec = it.div(1000000000.0)
 //      GD.print("moving mercury to ${modifiedVec}")
-        mercury.position = mercury.position.lerp(modifiedVec, 1 / 120.0)
+        mercury.position = mercury.position.lerp(modifiedVec, lerpWeight)
       }
     } catch (e: Exception) {
       GD.printErr(e)
