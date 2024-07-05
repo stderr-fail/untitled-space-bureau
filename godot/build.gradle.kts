@@ -6,7 +6,15 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":lib"))
+  implementation("ch.qos.logback:logback-classic:1.5.6")
+  implementation("org.slf4j:slf4j-api:2.0.13")
+
+  implementation("org.orekit:orekit:12.1.1")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
+  implementation("com.utopia-rise:godot-library-debug:${godotKotlinVersion}")
+
+//  implementation(project(":lib"))
+//  implementation(project(":solarsystem"))
 }
 
 godot {

@@ -1,6 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://bc08dhoyyn3kv"]
+[gd_scene load_steps=8 format=3 uid="uid://bc08dhoyyn3kv"]
 
-[ext_resource type="Script" path="res://scripts/dependencies/lib/fail/stderr/usb/SolarSystemNode3D.gdj" id="1_ndq8v"]
+[ext_resource type="Script" path="res://scripts/fail/stderr/usb/SolarSystemNode3D.gdj" id="1_h414q"]
 [ext_resource type="PackedScene" uid="uid://bm70ukdgodoue" path="res://ui.tscn" id="2_55vgb"]
 [ext_resource type="Script" path="res://ui.gd" id="3_3uqua"]
 
@@ -10,12 +10,15 @@ albedo_color = Color(1, 0.772549, 0, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jc0y7"]
 albedo_color = Color(8.8125e-07, 0.692018, 0.228299, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_78lsj"]
+albedo_color = Color(0.46529, 0.0385053, 5.3048e-08, 1)
+
 [sub_resource type="Environment" id="Environment_6cwqa"]
 background_mode = 1
 background_color = Color(1, 1, 1, 1)
 
 [node name="SolarSystem" type="Node3D"]
-script = ExtResource("1_ndq8v")
+script = ExtResource("1_h414q")
 
 [node name="Sun" type="CSGSphere3D" parent="."]
 radius = 4.0
@@ -25,6 +28,11 @@ material = SubResource("StandardMaterial3D_madtg")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33, 2.08165e-12, 143)
 radius = 2.0
 material = SubResource("StandardMaterial3D_jc0y7")
+
+[node name="Mercury" type="CSGSphere3D" parent="Sun"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.994, 2.08165e-12, 141.045)
+radius = 2.0
+material = SubResource("StandardMaterial3D_78lsj")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_6cwqa")
