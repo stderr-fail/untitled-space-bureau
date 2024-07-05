@@ -1,8 +1,10 @@
 package fail.stderr.usb
 
 import fail.stderr.usb.sim.SolarSystemSim
+import org.orekit.time.AbsoluteDate
+import org.orekit.time.TimeScalesFactory
 import org.slf4j.LoggerFactory
-import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 
 fun main() {
@@ -12,19 +14,20 @@ fun main() {
   log.info("test!")
 
 
-
   var sim = SolarSystemSim(speed = 1)
   sim.prep()
 
-  val secondsInDay = Duration.ofDays(1L).toSeconds().toDouble()
-  val secondsInWeek = Duration.ofDays(7L).toSeconds().toDouble()
-  val secondsIn4Weeks = secondsInWeek * 4
+  val utc = TimeScalesFactory.getUTC()
 
-  for (day in 1..365 * 100) {
-    sim.next(secondsInDay * day, 1.0) // 1h per second
+  val startDate = AbsoluteDate(2024, 6, 25, 0, 0, 0.0, utc)
+  var endDate = startDate
+
+  for (day in 1..365 * 10_000) {
+    endDate = endDate.shiftedBy(1L, TimeUnit.DAYS)
+    sim.next(endDate)
   }
 
-//  for (week in 1..52 * 100) {
+//  for (week in 1..52 * 10_000) {
 //    sim.next(secondsInWeek * week, 1.0) // 1h per second
 //  }
 
