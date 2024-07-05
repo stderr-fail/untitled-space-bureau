@@ -20,6 +20,9 @@ class SolarSystemNode3D : Node3D() {
   lateinit var earth: CSGSphere3D
   lateinit var moon: CSGSphere3D
   lateinit var mercury: CSGSphere3D
+  lateinit var venus: CSGSphere3D
+  lateinit var mars: CSGSphere3D
+
   lateinit var dateLabel: Label
 
   lateinit var sim: SolarSystemSim
@@ -43,6 +46,8 @@ class SolarSystemNode3D : Node3D() {
       earth = getNode("Sun/Earth".asNodePath()) as CSGSphere3D
       moon = getNode("Sun/Earth/Moon".asNodePath()) as CSGSphere3D
       mercury = getNode("Sun/Mercury".asNodePath()) as CSGSphere3D
+      venus = getNode("Sun/Venus".asNodePath()) as CSGSphere3D
+      mars = getNode("Sun/Mars".asNodePath()) as CSGSphere3D
       dateLabel = getNode("UI/ColorRect/MarginContainer/VBoxContainer/DateContainer/DateLabel".asNodePath()) as Label
 
       sim = SolarSystemSim(speed = speed)
@@ -144,6 +149,19 @@ class SolarSystemNode3D : Node3D() {
 //      GD.print("moving mercury to ${modifiedVec}")
         mercury.position = mercury.position.lerp(modifiedVec, lerpWeight)
       }
+
+      sim.venusVec?.let {
+        val modifiedVec = it.div(1000000000.0)
+//      GD.print("moving venus to ${modifiedVec}")
+        venus.position = venus.position.lerp(modifiedVec, lerpWeight)
+      }
+
+      sim.marsVec?.let {
+        val modifiedVec = it.div(1000000000.0)
+//      GD.print("moving mars to ${modifiedVec}")
+        mars.position = mars.position.lerp(modifiedVec, lerpWeight)
+      }
+
     } catch (e: Exception) {
       GD.printErr(e)
     }

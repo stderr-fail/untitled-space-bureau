@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bc08dhoyyn3kv"]
+[gd_scene load_steps=11 format=3 uid="uid://bc08dhoyyn3kv"]
 
 [ext_resource type="Script" path="res://scripts/fail/stderr/usb/SolarSystemNode3D.gdj" id="1_v14ct"]
 [ext_resource type="PackedScene" uid="uid://bm70ukdgodoue" path="res://ui.tscn" id="2_55vgb"]
@@ -15,6 +15,12 @@ albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_78lsj"]
 albedo_color = Color(0.46529, 0.0385053, 5.3048e-08, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mcsiu"]
+albedo_color = Color(0.546319, 0.541703, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3n6gs"]
+albedo_color = Color(0.726223, 2.79298e-06, 2.9599e-07, 1)
 
 [sub_resource type="Environment" id="Environment_6cwqa"]
 background_mode = 1
@@ -41,6 +47,14 @@ material = SubResource("StandardMaterial3D_1ht74")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.994, 2.08165e-12, 141.045)
 radius = 2.0
 material = SubResource("StandardMaterial3D_78lsj")
+
+[node name="Venus" type="CSGSphere3D" parent="Sun"]
+radius = 2.0
+material = SubResource("StandardMaterial3D_mcsiu")
+
+[node name="Mars" type="CSGSphere3D" parent="Sun"]
+radius = 1.75
+material = SubResource("StandardMaterial3D_3n6gs")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_6cwqa")

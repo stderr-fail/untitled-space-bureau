@@ -18,10 +18,14 @@ class SolarSystemSim(var speed: Int) {
   var earthVec: Vector3? = null
   var moonVec: Vector3? = null
   var mercuryVec: Vector3? = null
+  var venusVec: Vector3? = null
+  var marsVec: Vector3? = null
 
   lateinit var earthPropagator: KeplerianPropagator
   lateinit var moonPropagator: KeplerianPropagator
   lateinit var mercuryPropagator: KeplerianPropagator
+  lateinit var venusPropagator: KeplerianPropagator
+  lateinit var marsPropagator: KeplerianPropagator
 
   lateinit var utc: TimeScale
   lateinit var startDate: AbsoluteDate
@@ -39,6 +43,9 @@ class SolarSystemSim(var speed: Int) {
       earthPropagator.propagate(endDate)
       moonPropagator.propagate(endDate)
       mercuryPropagator.propagate(endDate)
+      venusPropagator.propagate(endDate)
+      marsPropagator.propagate(endDate)
+
 //    GD.print("next end")
     } catch (e: Exception) {
       log.error(e.message, e)
@@ -67,6 +74,8 @@ class SolarSystemSim(var speed: Int) {
     earthPropagator = buildEarthPropagator()
     moonPropagator = buildMoonPropagator()
     mercuryPropagator = buildMercuryPropagator()
+    venusPropagator = buildVenusPropagator()
+    marsPropagator = buildMarsPropagator()
 
 
     fun buildAdaptiveStepHandler(
@@ -83,8 +92,6 @@ class SolarSystemSim(var speed: Int) {
         val vec = Vector3(p.x, p.z, p.y)
 //        GD.print("${body}: ${vec}")
         vecSetter(vec)
-
-
 
         if (step % printEvery == 0L) {
 
@@ -105,6 +112,8 @@ class SolarSystemSim(var speed: Int) {
     earthPropagator.setStepHandler(buildAdaptiveStepHandler("earth") { earthVec = it })
     moonPropagator.setStepHandler(buildAdaptiveStepHandler("moon") { moonVec = it })
     mercuryPropagator.setStepHandler(buildAdaptiveStepHandler("mercury") { mercuryVec = it })
+    venusPropagator.setStepHandler(buildAdaptiveStepHandler("venus") { venusVec = it })
+    marsPropagator.setStepHandler(buildAdaptiveStepHandler("mars") { marsVec = it })
 
     val shiftBy = 1L
 //    val shiftBy = 168L
@@ -112,6 +121,8 @@ class SolarSystemSim(var speed: Int) {
     earthPropagator.propagate(startDate, startDate.shiftedBy(shiftBy, TimeUnit.DAYS))
     moonPropagator.propagate(startDate, startDate.shiftedBy(shiftBy, TimeUnit.DAYS))
     mercuryPropagator.propagate(startDate, startDate.shiftedBy(shiftBy, TimeUnit.DAYS))
+    venusPropagator.propagate(startDate, startDate.shiftedBy(shiftBy, TimeUnit.DAYS))
+    marsPropagator.propagate(startDate, startDate.shiftedBy(shiftBy, TimeUnit.DAYS))
 
 //    GD.print("init done")
   }

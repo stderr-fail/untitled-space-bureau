@@ -1,12 +1,9 @@
 package fail.stderr.usb.sim
 
-import org.orekit.bodies.CelestialBodyFactory
 import org.orekit.frames.FramesFactory
 import org.orekit.orbits.KeplerianOrbit
 import org.orekit.orbits.Orbit
-import org.orekit.orbits.OrbitType
 import org.orekit.propagation.analytical.KeplerianPropagator
-import org.orekit.time.AbsoluteDate
 
 
 fun buildEarthInitialOrbit(): Orbit {
@@ -44,12 +41,27 @@ fun buildMercuryInitialOrbit(): Orbit {
   return orbit
 }
 
-data class PropagationSettings(
-  val positionTolerance: Double,
-  val minStep: Double,
-  val maxStep: Double,
-  val propagationType: OrbitType,
-)
+fun buildVenusInitialOrbit(): Orbit {
+
+  val orbit = KeplerianOrbit(
+    OrbitalParams.VENUS_JPL_ICRF_TIME_PV_COORDINATES_2024_06_25,
+    OrbitalParams.INERTIAL_FRAME,
+    OrbitalParams.SUN_MU,
+  )
+
+  return orbit
+}
+
+fun buildMarsInitialOrbit(): Orbit {
+
+  val orbit = KeplerianOrbit(
+    OrbitalParams.MARS_JPL_ICRF_TIME_PV_COORDINATES_2024_06_25,
+    OrbitalParams.INERTIAL_FRAME,
+    OrbitalParams.SUN_MU,
+  )
+
+  return orbit
+}
 
 fun buildEarthPropagator(): KeplerianPropagator {
 
@@ -70,6 +82,22 @@ fun buildMoonPropagator(): KeplerianPropagator {
 fun buildMercuryPropagator(): KeplerianPropagator {
 
   val initialOrbit = buildMercuryInitialOrbit()
+  val propagator = buildBasePropagator(initialOrbit)
+
+  return propagator
+}
+
+fun buildVenusPropagator(): KeplerianPropagator {
+
+  val initialOrbit = buildVenusInitialOrbit()
+  val propagator = buildBasePropagator(initialOrbit)
+
+  return propagator
+}
+
+fun buildMarsPropagator(): KeplerianPropagator {
+
+  val initialOrbit = buildMarsInitialOrbit()
   val propagator = buildBasePropagator(initialOrbit)
 
   return propagator

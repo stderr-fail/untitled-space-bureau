@@ -22,7 +22,7 @@ fun main() {
   val startDate = AbsoluteDate(2024, 6, 25, 0, 0, 0.0, utc)
   var endDate = startDate
 
-  for (day in 1..365 * 10_000) {
+  for (day in 1..365 * 100) {
     endDate = endDate.shiftedBy(1L, TimeUnit.DAYS)
     sim.next(endDate)
   }
