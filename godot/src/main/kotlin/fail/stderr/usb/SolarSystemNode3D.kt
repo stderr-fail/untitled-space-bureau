@@ -30,6 +30,7 @@ class SolarSystemNode3D : Node3D() {
 
   lateinit var endDate: AbsoluteDate
   lateinit var initialDate: AbsoluteDate
+  var accumulatedMillis: Long = 0L
 
 
   @RegisterFunction
@@ -78,18 +79,27 @@ class SolarSystemNode3D : Node3D() {
         GD.print("rolled over rollingTime=${rollingTime}")
       }
 
+      val deltaMillis = Math.floor(delta * 1000).toLong()
 //      var scaledSeconds = Math.floor(rollingTime * speed).toLong()
 //      var scaledSeconds = (rollingTime * speed).toLong()
-      var scaledSeconds = Math.ceil((60 * delta) * speed).toLong()
+      var scaledMillis = deltaMillis * speed
 
-      var nextEndDate = endDate.shiftedBy(scaledSeconds, TimeUnit.SECONDS)
-      if (nextEndDate.isAfter(endDate)) {
+      accumulatedMillis += scaledMillis
+
+      if (accumulatedMillis >= 1000) {
+
+        var nextEndDate = endDate.shiftedBy(accumulatedMillis, TimeUnit.MILLISECONDS)
+        if (nextEndDate.isAfter(endDate)) {
 //        GD.print("${Instant.now()} :: [t=${time}] [nDays=${numDays}] moving endDate ${endDate} to ${nextEndDate}")
-        endDate = nextEndDate
-        sim.next(endDate) // 1h per second
-        dateLabel.text = "Date: ${endDate}"
+          endDate = nextEndDate
+          accumulatedMillis = (accumulatedMillis % 1000) * speed
+          sim.next(endDate) // 1h per second
+          dateLabel.text = "Date: ${endDate}"
+
+        }
 
       }
+
 
 //      val lerpWeight = 1 / 120.0 * delta
       val lerpWeight = delta / (1 / 120.0)
