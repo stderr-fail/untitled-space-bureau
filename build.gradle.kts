@@ -5,7 +5,6 @@ plugins {
   kotlin("jvm") version "1.9.23"
 }
 
-
 tasks {
   withType<JavaCompile> {
     options.release = 21
