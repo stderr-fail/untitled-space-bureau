@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://stderr.fail/schemas/System",
+  "title": "System schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "rootBody",
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The system name",
+    },
+    "rootBody": {
+      "$ref": "https://stderr.fail/schemas/CelestialBody",
+    },
+  },
+}
