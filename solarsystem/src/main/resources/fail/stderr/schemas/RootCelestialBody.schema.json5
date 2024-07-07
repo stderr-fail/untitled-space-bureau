@@ -1,13 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://stderr.fail/schemas/CelestialBody",
-  "title": "Celestial Body schema",
+  "$id": "https://stderr.fail/schemas/RootCelestialBody",
+  "title": "Root Celestial Body schema",
   "type": "object",
   "additionalProperties": false,
   "required": [
     "name",
     "mu",
-    "initialOrbitalParameters",
   ],
   "properties": {
     "name": {
@@ -17,9 +16,6 @@
     "mu": {
       "type": "number",
       "description": "The bodies gravitational constant",
-    },
-    "initialOrbitalParameters": {
-      "$ref": "https://stderr.fail/schemas/KeplerianOrbitalParameters",
     },
     "children": {
       "type": "array",

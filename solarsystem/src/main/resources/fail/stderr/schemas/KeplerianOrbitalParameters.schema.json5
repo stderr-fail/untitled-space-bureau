@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://stderr.fail/schemas/KeplerianOrbitalParameters",
+  "title": "Celestial Body schema",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "semiMajorAxis",
+    "eccentricity",
+    "inclination",
+    "perigreeArgument",
+    "raan",
+    "anomaly"
+  ],
+  "properties": {
+    "semiMajorAxis": {
+      "type": "number",
+      "description": "semi-major axis in **meters**",
+      "x-intellij-html-description": "<p>semi-major axis in <strong>meters</strong></p>\n",
+    },
+    "eccentricity": {
+      "type": "number",
+      "description": "eccentricity in **dimensionless**",
+      "x-intellij-html-description": "<p>eccentricity in <strong>dimensionless</strong></p>\n",
+    },
+    "inclination": {
+      "type": "number",
+      "description": "inclination in **radians**",
+      "x-intellij-html-description": "<p>inclination in <strong>radians</strong></p>\n",
+    },
+    "perigreeArgument": {
+      "type": "number",
+      "description": "* ω\n* perigee argument\n* argument of periapsis\n\nin **radians**\n",
+      "x-intellij-html-description": "<ul>\n<li>ω</li>\n<li>perigee argument</li>\n<li>argument of periapsis</li>\n</ul>\n<p>in <strong>radians</strong></p>\n",
+    },
+    "raan": {
+      "type": "number",
+      "description": "* Ω\n* right ascension of ascending node\n* raan\n* longitude of the ascending node\n* lan\n\nin **radians**\n",
+      "x-intellij-html-description": "<ul>\n<li>Ω</li>\n<li>right ascension of ascending node</li>\n<li>raan</li>\n<li>longitude of the ascending node</li>\n<li>lan</li>\n</ul>\n<p>in <strong>radians</strong></p>\n",
+    },
+    "anomaly": {
+      "type": "number",
+      "description": "mean\n* mean anomaly at epoch\n* eccentric or true anomaly\n\nin **radians**\n",
+      "x-intellij-html-description": "<p>mean</p>\n<ul>\n<li>mean anomaly at epoch</li>\n<li>eccentric or true anomaly</li>\n</ul>\n<p>in <strong>radians</strong></p>\n",
+    }
+  }
+}

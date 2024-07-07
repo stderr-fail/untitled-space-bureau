@@ -1,0 +1,86 @@
+---
+$schema: "https://stderr.fail/schemas/System"
+name: "Dwarla"
+rootBody:
+  name: "Dwarlux"
+  mu: 1.23456789e18
+  children:
+
+    - name: "Dwar"
+      mu: 8.7654321e11
+      initialOrbitalParameters:
+        semiMajorAxis: 9.87654321e10
+        eccentricity: 0.075
+        # 7 deg = 0.122173 rad
+        inclination: 0.122173
+        perigreeArgument: 0
+        # 123 deg = 2.14675 rad
+        raan: 2.14675
+        anomaly: 3.12
+      children:
+        - name: "Dwobos"
+          mu: 7.161e5
+          initialOrbitalParameters:
+            semiMajorAxis: 9.376e6
+            eccentricity: 0.0151
+            # 1.093 deg = 0.019076449 rad
+            inclination: 0.019076449
+            # 150.057 deg = 2.618988716 rad
+            perigreeArgument: 2.618988716
+            # 49.129 deg = 0.857462808 rad
+            raan: 0.857462808
+            # 187.107 deg = 3.265633204 rad
+            anomaly: 3.265633204
+        - name: "Dwimos"
+          mu: 9.64e4
+          initialOrbitalParameters:
+            semiMajorAxis: 2.34632e7
+            eccentricity: 0.00033
+            # 0.93 deg = 0.01623156 rad
+            inclination: 0.01623156
+            # 260.729 deg = 4.550579505 rad
+            perigreeArgument: 4.550579505
+            # 77.283 deg = 1.34884281 rad
+            raan: 1.34884281
+            # 317.65 deg = 5.54403837 rad
+            anomaly: 5.54403837
+
+    - name: "Dwarlin"
+      mu: 3.21e12
+      initialOrbitalParameters:
+        semiMajorAxis: 1.3599840256e10
+        eccentricity: 0
+        inclination: 0
+        perigreeArgument: 0
+        raan: 0
+        anomaly: 3.14
+      children:
+        - name: "Dweeb"
+          mu: 6.54321e10
+          initialOrbitalParameters:
+            semiMajorAxis: 4.321e7
+            eccentricity: 0
+            inclination: 0
+            perigreeArgument: 0
+            raan: 0
+            anomaly: 1.7
+        - name: "Dwun"
+          mu: 6.54321e11
+          initialOrbitalParameters:
+            semiMajorAxis: 1.15e7
+            eccentricity: 0
+            inclination: 0
+            perigreeArgument: 0
+            raan: 0
+            anomaly: 1.7
+          children:
+            - name: "Dwunette"
+              mu: 9.876e8
+              initialOrbitalParameters:
+                semiMajorAxis: 6.54321e5
+                eccentricity: 0
+                inclination: 0
+                perigreeArgument: 0
+                raan: 0
+                anomaly: 0
+

@@ -2,6 +2,6 @@
   "name": "Dwarla",
   "rootBody": {
     name: "Dwarlux",
-//    "mu": 1.23456789e18
+    "mu": 1.23456789e18,
   }
 }

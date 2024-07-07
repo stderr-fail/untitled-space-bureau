@@ -3,18 +3,22 @@
   "$id": "https://stderr.fail/schemas/System",
   "title": "System schema",
   "type": "object",
-  "additionalProperties": false,
+  "additionalProperties": true,
   "required": [
     "name",
     "rootBody",
   ],
   "properties": {
+    "$schema": {
+      type: "string",
+      description: "json-schema uri"
+    },
     "name": {
       "type": "string",
       "description": "The system name",
     },
     "rootBody": {
-      "$ref": "https://stderr.fail/schemas/CelestialBody",
+      "$ref": "https://stderr.fail/schemas/RootCelestialBody",
     },
   },
 }
