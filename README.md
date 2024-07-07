@@ -17,3 +17,4 @@ Godot project settings > [advanced] > Editor > Run
 ```
 --jvm-debug-port=5005 --wait-for-debugger=false
 ```
+
