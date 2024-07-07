@@ -1,4 +1,4 @@
-package fail.stderr.usb.common2;
+package fail.stderr.usb.common;
 
 import org.orekit.frames.Frame;
 import org.orekit.orbits.KeplerianOrbit;

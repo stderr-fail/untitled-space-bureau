@@ -1,4 +1,4 @@
-package fail.stderr.usb.common2;
+package fail.stderr.usb.common;
 
 import org.hipparchus.CalculusFieldElement;
 import org.hipparchus.geometry.euclidean.threed.FieldVector3D;

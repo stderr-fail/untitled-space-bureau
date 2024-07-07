@@ -1,9 +1,9 @@
 package fail.stderr.usb.kerbol2;
 
-import fail.stderr.usb.common2.CustomCelestialBody;
-import fail.stderr.usb.common2.FrameFunctions;
-import fail.stderr.usb.common2.KeplerianOrbitParameters;
-import fail.stderr.usb.common2.OrbitFunctions;
+import fail.stderr.usb.common.CustomCelestialBody;
+import fail.stderr.usb.common.FrameFunctions;
+import fail.stderr.usb.common.KeplerianOrbitParameters;
+import fail.stderr.usb.common.OrbitFunctions;
 import org.orekit.bodies.CelestialBody;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.KeplerianOrbit;

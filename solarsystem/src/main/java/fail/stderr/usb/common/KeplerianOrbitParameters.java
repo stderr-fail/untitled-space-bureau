@@ -1,4 +1,4 @@
-package fail.stderr.usb.common2;
+package fail.stderr.usb.common;
 
 /**
  * @param semiMajorAxis semi-major axis in <b>meters</b>

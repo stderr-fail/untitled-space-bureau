@@ -1,4 +1,4 @@
-package fail.stderr.usb.common2;
+package fail.stderr.usb.common;
 
 import org.hipparchus.CalculusFieldElement;
 import org.jetbrains.annotations.NotNull;

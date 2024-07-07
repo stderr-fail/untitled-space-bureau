@@ -12,7 +12,7 @@ import fail.stderr.usb.model.data.DataDeserializationError;
 import fail.stderr.usb.model.result.Result;
 import fail.stderr.usb.model.result.ResultErr;
 import fail.stderr.usb.model.result.ResultOk;
-import fail.stderr.usb.model.system.SystemData;
+import fail.stderr.usb.data.system.SystemData;
 
 import java.io.IOException;
 import java.io.InputStream;
