@@ -17,7 +17,6 @@ public class StderrFailSchemaMapper implements SchemaMapper {
     if (absoluteURI != null && absoluteURI.startsWith("https://stderr.fail/schemas/")) {
       final String schemaName = absoluteURI.substring(PREFIX.length());
       final String classpathResource = "classpath:fail/stderr/schemas/%s.schema.json5".formatted(schemaName);
-//      final String classpathResource = "classpath:fail/stderr/schemas/%s.schema.yaml".formatted(schemaName);
       return AbsoluteIri.of(classpathResource);
     }
     return null;
