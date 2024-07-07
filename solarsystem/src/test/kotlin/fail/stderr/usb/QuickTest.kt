@@ -1,9 +1,6 @@
 package fail.stderr.usb
 
-import fail.stderr.usb.common.CommonConstants
-import fail.stderr.usb.kerbol.buildKerbinOrbit
-import fail.stderr.usb.kerbol.buildMunOrbit
-import fail.stderr.usb.kerbol.createKerbinCenteredFrame
+import fail.stderr.usb.kerbol.KerbolSystem
 import org.hipparchus.geometry.euclidean.threed.Vector3D
 import org.junit.jupiter.api.Test
 import org.orekit.errors.OrekitException
@@ -25,13 +22,14 @@ class QuickTest {
 
     try {
 
+      val k = KerbolSystem()
+
+
       // Create Keplerian propagator
-      val kerbinPropagator = KeplerianPropagator(buildKerbinOrbit())
-      val munPropagator = KeplerianPropagator(buildMunOrbit())
+      val kerbinPropagator = KeplerianPropagator(k.kerbinOrbit)
+      val munPropagator = KeplerianPropagator(k.munOrbit)
 
-      val kerbinFrame = createKerbinCenteredFrame()
-
-      var lastPropagatedDate: AbsoluteDate = CommonConstants.REF_DATE
+      var lastPropagatedDate: AbsoluteDate = KerbolSystem.REF_DATE
 
       fun buildAdaptiveStepHandler(body: String, vecSetter: (value: Vector3D) -> Unit): OrekitStepHandler {
         var step = 0L
@@ -43,19 +41,8 @@ class QuickTest {
 
           vecSetter(vec)
 
-          log.debug("${body} [${step}] propagated last=${lastPropagatedDate} to next=${interpolator.currentState.date} to ${vec}")
+          log.debug("${body} [${step}] propagated last=${lastPropagatedDate} to next=${interpolator.currentState.date} to ${vec} d=${vec.norm}")
           lastPropagatedDate = interpolator.currentState.date
-
-          if (body == "mun") {
-            val transformed = CommonConstants.REF_INERTIAL_FRAME
-              .getTransformTo(kerbinFrame, interpolator.currentState.date)
-              .transformPVCoordinates(interpolator.currentState.pvCoordinates)
-            val xVec = Vector3D(transformed.position.x, transformed.position.z, transformed.position.y)
-
-            log.debug("${body} [${step}] propagated last=${lastPropagatedDate} to next=${interpolator.currentState.date} to ${vec} x ${xVec}")
-
-
-          }
 
           step++
         }
@@ -67,12 +54,12 @@ class QuickTest {
 
 
       for (i in 1..52) {
-        val nextDate = CommonConstants.REF_DATE.shiftedBy(i.toLong() * 7L, TimeUnit.DAYS)
+        val nextDate = KerbolSystem.REF_DATE.shiftedBy(i.toLong() * 7L, TimeUnit.DAYS)
         kerbinPropagator.propagate(nextDate)
       }
 
       for (i in 1..52) {
-        val nextDate = CommonConstants.REF_DATE.shiftedBy(i.toLong() * 7L, TimeUnit.DAYS)
+        val nextDate = KerbolSystem.REF_DATE.shiftedBy(i.toLong() * 7L, TimeUnit.DAYS)
         munPropagator.propagate(nextDate)
 
       }

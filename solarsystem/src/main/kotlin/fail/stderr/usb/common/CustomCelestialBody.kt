@@ -10,7 +10,7 @@ import org.orekit.utils.TimeStampedFieldPVCoordinates
 import org.orekit.utils.TimeStampedPVCoordinates
 
 class CustomCelestialBody(
-  val _name: String,
+  val bodyName: String,
   val mu: Double,
   val frame: Frame,
   val orbit: Orbit?,
@@ -38,7 +38,7 @@ class CustomCelestialBody(
   }
 
   override fun getName(): String {
-    return _name
+    return bodyName
   }
 
   override fun getGM(): Double {
