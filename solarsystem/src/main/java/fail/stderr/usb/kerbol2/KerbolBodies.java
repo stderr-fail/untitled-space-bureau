@@ -2,8 +2,8 @@ package fail.stderr.usb.kerbol2;
 
 import fail.stderr.usb.common.CustomCelestialBody;
 import fail.stderr.usb.common.FrameFunctions;
-import fail.stderr.usb.common.KeplerianOrbitParameters;
 import fail.stderr.usb.common.OrbitFunctions;
+import fail.stderr.usb.data.system.KeplerianOrbitalParametersData;
 import org.orekit.bodies.CelestialBody;
 import org.orekit.frames.Frame;
 import org.orekit.orbits.KeplerianOrbit;
@@ -30,8 +30,8 @@ public class KerbolBodies {
     return FrameFunctions.createRootFrame(Constants.KERBOL_NAME);
   }
 
-  public static KeplerianOrbitParameters createKerbinOrbitParameters() {
-    return new KeplerianOrbitParameters(
+  public static KeplerianOrbitalParametersData createKerbinOrbitParameters() {
+    return new KeplerianOrbitalParametersData(
       13599840256.0, // semiMajorAxis
       0.0, // eccentricity
       0.0, // inclination
@@ -42,7 +42,7 @@ public class KerbolBodies {
   }
 
   public static KeplerianOrbit createKerbinOrbit(Frame parentFrame) {
-    return OrbitFunctions.createKeplerianOrbit(
+    return OrbitFunctions.Companion.createKeplerianOrbit(
       createKerbinOrbitParameters(),
       parentFrame,
       KerbolSystemConstants.REF_DATE,
@@ -58,8 +58,8 @@ public class KerbolBodies {
     return new CustomCelestialBody(Constants.KERBIN_NAME, KerbolBodies.Constants.KERBIN_MU, frame, bodyOrbit);
   }
 
-  public static KeplerianOrbitParameters createMunOrbitParameters() {
-    return new KeplerianOrbitParameters(
+  public static KeplerianOrbitalParametersData createMunOrbitParameters() {
+    return new KeplerianOrbitalParametersData(
       12000000.0, // semiMajorAxis
       0.0, // eccentricity
       0.0, // inclination
@@ -70,7 +70,7 @@ public class KerbolBodies {
   }
 
   public static KeplerianOrbit createMunOrbit(Frame parentFrame) {
-    return OrbitFunctions.createKeplerianOrbit(
+    return OrbitFunctions.Companion.createKeplerianOrbit(
       createMunOrbitParameters(),
       parentFrame,
       KerbolSystemConstants.REF_DATE,
@@ -86,8 +86,8 @@ public class KerbolBodies {
     return new CustomCelestialBody(Constants.MUN_NAME, KerbolBodies.Constants.MUN_MU, frame, bodyOrbit);
   }
 
-  public static KeplerianOrbitParameters createMinmusOrbitParameters() {
-    return new KeplerianOrbitParameters(
+  public static KeplerianOrbitalParametersData createMinmusOrbitParameters() {
+    return new KeplerianOrbitalParametersData(
       47000000, // semiMajorAxis
       0.0, // eccentricity
       Math.toRadians(6.0), // inclination
@@ -98,7 +98,7 @@ public class KerbolBodies {
   }
 
   public static KeplerianOrbit createMinmusOrbit(Frame parentFrame) {
-    return OrbitFunctions.createKeplerianOrbit(
+    return OrbitFunctions.Companion.createKeplerianOrbit(
       createMinmusOrbitParameters(),
       parentFrame,
       KerbolSystemConstants.REF_DATE,
