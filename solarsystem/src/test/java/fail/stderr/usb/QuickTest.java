@@ -40,6 +40,7 @@ public class QuickTest {
 
         var p = interpolator.getCurrentState().getPVCoordinates().getPosition();
 
+
         var vec = new Vector3D(p.getX(), p.getZ(), p.getY());
 
         log.debug("{} [{}] propagated last={} to next={} to {} d={}", "??", step, lastPropagatedDate, interpolator.getCurrentState().getDate(), vec, vec.getNorm());

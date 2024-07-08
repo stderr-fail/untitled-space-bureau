@@ -8,18 +8,18 @@ import org.orekit.orbits.KeplerianOrbit
 
 sealed class CelestialBodyHolder(
   open val frame: Frame,
-  open var children: List<CelestialBodyHolder>,
+  open var children: List<DefaultCelestialBodyHolder>,
   open var name: String,
   val mu: Double,
 )
 
-data class DefaultCelestialHolder(
+data class DefaultCelestialBodyHolder(
   val data: CelestialBodyData,
   val orbit: KeplerianOrbit,
   override val frame: Frame,
   val body: CelestialBody,
   val parent: CelestialBodyHolder,
-  override var children: List<CelestialBodyHolder>,
+  override var children: List<DefaultCelestialBodyHolder>,
 ) : CelestialBodyHolder(frame = frame, mu = data.mu, children = children, name = data.name) {
   override fun toString(): String {
     return "DefaultCelestialHolder(name=$name, data=$data, frame=$frame, orbit=$orbit, body=$body, parent=$parent)"
@@ -29,7 +29,7 @@ data class DefaultCelestialHolder(
 data class RootCelestialBodyHolder(
   val data: RootCelestialBodyData,
   override val frame: Frame,
-  override var children: List<CelestialBodyHolder>,
+  override var children: List<DefaultCelestialBodyHolder>,
 ) : CelestialBodyHolder(frame = frame, mu = data.mu, children = children, name = data.name) {
   override fun toString(): String {
     return "RootCelestialBodyHolder(name=$name, data=$data, frame=$frame)"

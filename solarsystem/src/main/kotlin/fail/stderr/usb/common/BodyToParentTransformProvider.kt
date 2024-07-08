@@ -1,39 +1,35 @@
-package fail.stderr.usb.common;
+package fail.stderr.usb.common
 
-import org.hipparchus.CalculusFieldElement;
-import org.hipparchus.geometry.euclidean.threed.FieldVector3D;
-import org.jetbrains.annotations.NotNull;
-import org.orekit.frames.FieldTransform;
-import org.orekit.frames.Frame;
-import org.orekit.frames.Transform;
-import org.orekit.frames.TransformProvider;
-import org.orekit.orbits.KeplerianOrbit;
-import org.orekit.time.AbsoluteDate;
-import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.utils.FieldPVCoordinates;
+import org.hipparchus.CalculusFieldElement
+import org.hipparchus.geometry.euclidean.threed.FieldVector3D
+import org.orekit.frames.FieldTransform
+import org.orekit.frames.Frame
+import org.orekit.frames.Transform
+import org.orekit.frames.TransformProvider
+import org.orekit.orbits.KeplerianOrbit
+import org.orekit.time.AbsoluteDate
+import org.orekit.time.FieldAbsoluteDate
+import org.orekit.utils.FieldPVCoordinates
 
-public record BodyToParentTransformProvider(
-  @NotNull KeplerianOrbit bodyOrbit,
-  @NotNull Frame parentFrame
-) implements TransformProvider {
+class BodyToParentTransformProvider(
+  val bodyOrbit: KeplerianOrbit,
+  val parentFrame: Frame
+) : TransformProvider {
 
-  @Override
-  public Transform getTransform(AbsoluteDate date) {
-    final var bodyPV = bodyOrbit.getPVCoordinates(date, parentFrame);
-    return new Transform(date, bodyPV);
+  override fun getTransform(date: AbsoluteDate): Transform {
+    val bodyPV = bodyOrbit.getPVCoordinates(date, parentFrame)
+    return Transform(date, bodyPV)
   }
 
-  @Override
-  public <T extends CalculusFieldElement<T>> FieldTransform<T> getTransform(FieldAbsoluteDate<T> date) {
-    final var bodyPV = bodyOrbit.getPVCoordinates(date.toAbsoluteDate(), parentFrame);
-    final var ft = new FieldTransform(
+  override fun <T : CalculusFieldElement<T>> getTransform(date: FieldAbsoluteDate<T>): FieldTransform<T> {
+    val bodyPV = bodyOrbit.getPVCoordinates(date.toAbsoluteDate(), parentFrame)
+    val ft: FieldTransform<T> = FieldTransform(
       date,
-      new FieldPVCoordinates(
-        new FieldVector3D(date.getField(), bodyPV.getPosition()),
-        new FieldVector3D(date.getField(), bodyPV.getVelocity())
+      FieldPVCoordinates(
+        FieldVector3D(date.field, bodyPV.position),
+        FieldVector3D(date.field, bodyPV.velocity)
       )
-    );
-    return ft;
+    )
+    return ft
   }
-
 }

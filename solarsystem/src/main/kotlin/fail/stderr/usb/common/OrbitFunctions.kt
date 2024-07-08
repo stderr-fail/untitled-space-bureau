@@ -8,6 +8,8 @@ import org.orekit.time.AbsoluteDate
 
 class OrbitFunctions {
   companion object {
+
+    @JvmStatic
     fun createKeplerianOrbit(
       params: KeplerianOrbitalParametersData,
       parentFrame: Frame?,

@@ -1,57 +1,51 @@
-package fail.stderr.usb.common;
+package fail.stderr.usb.common
 
-import org.hipparchus.CalculusFieldElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.orekit.bodies.CelestialBody;
-import org.orekit.frames.Frame;
-import org.orekit.orbits.Orbit;
-import org.orekit.time.FieldAbsoluteDate;
-import org.orekit.utils.PVCoordinates;
-import org.orekit.utils.TimeStampedFieldPVCoordinates;
-import org.orekit.utils.TimeStampedPVCoordinates;
+import org.hipparchus.CalculusFieldElement
+import org.orekit.bodies.CelestialBody
+import org.orekit.frames.Frame
+import org.orekit.orbits.Orbit
+import org.orekit.time.FieldAbsoluteDate
+import org.orekit.utils.PVCoordinates
+import org.orekit.utils.TimeStampedFieldPVCoordinates
+import org.orekit.utils.TimeStampedPVCoordinates
 
-public record CustomCelestialBody(
-  @NotNull String name,
-  @NotNull double mu,
-  @NotNull Frame frame,
-  @Nullable Orbit orbit
-) implements CelestialBody {
-
-  @Override
-  public Frame getInertiallyOrientedFrame() {
-    return frame;
+@JvmRecord
+data class CustomCelestialBody(
+  val name: String,
+  val mu: Double,
+  val frame: Frame,
+  val orbit: Orbit?,
+) : CelestialBody {
+  override fun getInertiallyOrientedFrame(): Frame {
+    return frame
   }
 
-  @Override
-  public Frame getBodyOrientedFrame() {
-    return frame;
+  override fun getBodyOrientedFrame(): Frame {
+    return frame
   }
 
-  @Override
-  public String getName() {
-    return name;
+  override fun getName(): String {
+    return name
   }
 
-  @Override
-  public double getGM() {
-    return mu;
+  override fun getGM(): Double {
+    return mu
   }
 
-  @Override
-  public <T extends CalculusFieldElement<T>> TimeStampedFieldPVCoordinates<T> getPVCoordinates(FieldAbsoluteDate<T> date, Frame frame) {
-    switch (orbit) {
-      case null -> {
-        return new TimeStampedFieldPVCoordinates(
-          date.getField(),
-          new TimeStampedPVCoordinates(date.toAbsoluteDate(), PVCoordinates.ZERO)
-        );
-      }
-      default -> {
-        final var pv = orbit.getPVCoordinates(date.toAbsoluteDate(), frame);
-        return new TimeStampedFieldPVCoordinates(date.getField(), pv);
+  override fun <T : CalculusFieldElement<T>> getPVCoordinates(
+    date: FieldAbsoluteDate<T>,
+    frame: Frame
+  ): TimeStampedFieldPVCoordinates<T> =
+    when (orbit) {
+      null -> TimeStampedFieldPVCoordinates(
+        date.field,
+        TimeStampedPVCoordinates(date.toAbsoluteDate(), PVCoordinates.ZERO)
+      )
+
+      else -> {
+        val pv = orbit.getPVCoordinates(date.toAbsoluteDate(), frame)
+        TimeStampedFieldPVCoordinates(date.field, pv)
       }
     }
-  }
 
 }

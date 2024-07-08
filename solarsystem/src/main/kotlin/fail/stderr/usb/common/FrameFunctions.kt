@@ -1,26 +1,28 @@
-package fail.stderr.usb.common;
+package fail.stderr.usb.common
 
-import org.orekit.frames.Frame;
-import org.orekit.orbits.KeplerianOrbit;
+import org.orekit.frames.Frame
+import org.orekit.orbits.KeplerianOrbit
 
-import java.lang.reflect.InvocationTargetException;
+class FrameFunctions {
 
-public class FrameFunctions {
+  companion object {
 
-  public static Frame createRootFrame(String name) {
-    try {
-      var c = Frame.class.getDeclaredConstructor(String.class, boolean.class);
-      c.setAccessible(true);
-      var frame = c.newInstance(name, true);
-      return frame;
-    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-      throw new RuntimeException(e);
+    @JvmStatic
+    fun createRootFrame(name: String?): Frame {
+      val c = Frame::class.java.getDeclaredConstructor(
+        String::class.java, Boolean::class.javaPrimitiveType
+      )
+      c.isAccessible = true
+      val frame = c.newInstance(name, true)
+      return frame
     }
-  }
 
-  public static Frame createBodyFrame(String bodyName, KeplerianOrbit bodyOrbit, Frame parentFrame) {
-    var transformProvider = new BodyToParentTransformProvider(bodyOrbit, parentFrame);
-    return new Frame(parentFrame, transformProvider, "%sCenteredFrame".formatted(bodyName), true);
+    @JvmStatic
+    fun createBodyFrame(bodyName: String?, bodyOrbit: KeplerianOrbit?, parentFrame: Frame?): Frame {
+      val transformProvider = BodyToParentTransformProvider(bodyOrbit!!, parentFrame!!)
+      return Frame(parentFrame, transformProvider, "${bodyName}CenteredFrame", true)
+    }
+
   }
 
 }

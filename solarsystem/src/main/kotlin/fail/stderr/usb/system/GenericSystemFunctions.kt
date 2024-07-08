@@ -6,7 +6,7 @@ import fail.stderr.usb.common.OrbitFunctions
 import fail.stderr.usb.data.system.CelestialBodyData
 import fail.stderr.usb.data.system.SystemData
 import fail.stderr.usb.system.model.CelestialBodyHolder
-import fail.stderr.usb.system.model.DefaultCelestialHolder
+import fail.stderr.usb.system.model.DefaultCelestialBodyHolder
 import fail.stderr.usb.system.model.RootCelestialBodyHolder
 import org.orekit.time.AbsoluteDate
 import org.orekit.time.TimeScaleFunctions
@@ -29,7 +29,10 @@ fun createGenericSystem(name: String, data: SystemData): GenericSystem {
 
   val nonRootCelestialBodies = enumerateCelestialBodiesFromTree(rootBodyHolder)
 
-  val allCelestialBodies = nonRootCelestialBodies.associateBy(CelestialBodyHolder::name).toMutableMap()
+  val allCelestialBodies = nonRootCelestialBodies
+    .associateBy(CelestialBodyHolder::name)
+    .toMutableMap<String, CelestialBodyHolder>()
+
   allCelestialBodies.put(rootBodyHolder.name, rootBodyHolder)
 
   return GenericSystem(
@@ -45,8 +48,9 @@ fun createGenericSystem(name: String, data: SystemData): GenericSystem {
 
 private fun enumerateCelestialBodiesFromTree(
   body: CelestialBodyHolder,
-  collector: MutableList<CelestialBodyHolder> = mutableListOf(),
-): List<CelestialBodyHolder> {
+  collector: MutableList<DefaultCelestialBodyHolder> = mutableListOf(),
+): List<DefaultCelestialBodyHolder> {
+
   collector.addAll(body.children)
 
   body.children.forEach { enumerateCelestialBodiesFromTree(it, collector) }
@@ -58,7 +62,7 @@ private fun createBodies(
   refDate: AbsoluteDate,
   parent: CelestialBodyHolder,
   bodies: Array<CelestialBodyData>
-): List<CelestialBodyHolder> {
+): List<DefaultCelestialBodyHolder> {
   return bodies.map { createBody(refDate, parent, it) }
 }
 
@@ -66,7 +70,7 @@ private fun createBody(
   refDate: AbsoluteDate,
   parent: CelestialBodyHolder,
   bodyData: CelestialBodyData
-): CelestialBodyHolder {
+): DefaultCelestialBodyHolder {
 
   val bodyOrbit = OrbitFunctions.createKeplerianOrbit(
     params = bodyData.initialOrbitalParameters,
@@ -79,7 +83,7 @@ private fun createBody(
 
   val body = CustomCelestialBody(bodyData.name, bodyData.mu, bodyFrame, bodyOrbit)
 
-  val genericBody = DefaultCelestialHolder(
+  val genericBody = DefaultCelestialBodyHolder(
     body = body,
     data = bodyData,
     frame = bodyFrame,

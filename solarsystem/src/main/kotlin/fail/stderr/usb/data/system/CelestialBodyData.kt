@@ -1,5 +1,7 @@
 package fail.stderr.usb.data.system
 
+import fail.stderr.usb.system.model.DefaultCelestialBodyHolder
+
 @JvmRecord
 data class CelestialBodyData(
   val name: String,
