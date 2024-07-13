@@ -13,11 +13,11 @@ import fail.stderr.usb.ex.DataDeserializationException
 import fail.stderr.usb.system.schema.StderrFailSchemaMapper
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
-import java.util.function.Consumer
 import java.util.function.Supplier
 import java.util.stream.Collectors
 
 object SystemDataUtils {
+
   @JvmStatic
   fun fromYAML(streamProvider: Supplier<InputStream>): SystemData {
 
@@ -48,6 +48,7 @@ object SystemDataUtils {
 
   }
 
+  @JvmStatic
   fun createClasspathScanningJsonSchemaFactory(): JsonSchemaFactory {
     val factory: JsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7) { //
         builder: JsonSchemaFactory.Builder ->
@@ -65,6 +66,7 @@ object SystemDataUtils {
     return factory
   }
 
+  @JvmStatic
   val systemJsonSchema: JsonSchema by lazy {
     val factory: JsonSchemaFactory = createClasspathScanningJsonSchemaFactory()
     val builder: SchemaValidatorsConfig.Builder = SchemaValidatorsConfig.builder()
@@ -72,6 +74,7 @@ object SystemDataUtils {
     factory.getSchema(SchemaLocation.of("https://stderr.fail/schemas/System"), config)
   }
 
+  @JvmStatic
   val jsonMapper: JsonMapper by lazy {
     JsonMapper.builder()
       .enable(JsonReadFeature.ALLOW_UNQUOTED_FIELD_NAMES)
@@ -87,6 +90,7 @@ object SystemDataUtils {
       .build()
   }
 
+  @JvmStatic
   val yamlMapper: YAMLMapper by lazy {
     YAMLMapper.builder()
       .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

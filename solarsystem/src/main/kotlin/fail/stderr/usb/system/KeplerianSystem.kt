@@ -7,7 +7,7 @@ import org.orekit.frames.Frame
 import org.orekit.time.AbsoluteDate
 import org.orekit.time.TimeScale
 
-class GenericSystem(
+class KeplerianSystem(
   val name: String,
   val rootBody: RootCelestialBodyHolder,
   val refFrame: Frame,

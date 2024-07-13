@@ -11,7 +11,7 @@ import fail.stderr.usb.system.model.RootCelestialBodyHolder
 import org.orekit.time.AbsoluteDate
 import org.orekit.time.TimeScaleFunctions
 
-fun createGenericSystem(name: String, data: SystemData): GenericSystem {
+fun createGenericSystem(name: String, data: SystemData): KeplerianSystem {
 
   val timeScale = TimeScaleFunctions.createConstantOffsetTimeScale("${name}Time", 0.0)
 
@@ -35,7 +35,7 @@ fun createGenericSystem(name: String, data: SystemData): GenericSystem {
 
   allCelestialBodies.put(rootBodyHolder.name, rootBodyHolder)
 
-  return GenericSystem(
+  return KeplerianSystem(
     name = name,
     rootBody = rootBodyHolder,
     refFrame = rootBodyFrame,
