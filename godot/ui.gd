@@ -4,7 +4,7 @@ signal speed_changed
 
 var speed: int = 1
 
-var sim: SolarSystemNode3D
+var sim: GenericSystemNode3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

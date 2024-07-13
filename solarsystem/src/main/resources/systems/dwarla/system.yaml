@@ -5,6 +5,18 @@ rootBody:
   name: "Dwarlux"
   mu: 1.23456789e18
   children:
+    - name: "Oddball"
+      mu: 11.7654321e11
+      initialOrbitalParameters:
+        semiMajorAxis: 6.87654321e10
+        eccentricity: 0.7
+        # 73 deg = 1.27409 rad
+        inclination: 1.27409
+        perigreeArgument: 0
+        # 123 deg = 2.14675 rad
+        raan: 2.14675
+        anomaly: 3.12
+
 
     - name: "Dwar"
       mu: 8.7654321e11
@@ -48,8 +60,8 @@ rootBody:
     - name: "Dwarlin"
       mu: 3.21e12
       initialOrbitalParameters:
-        semiMajorAxis: 1.3599840256e10
-        eccentricity: 0
+        semiMajorAxis: 6.3599840256e10
+        eccentricity: 0.5
         inclination: 0
         perigreeArgument: 0
         raan: 0
@@ -59,8 +71,8 @@ rootBody:
           mu: 6.54321e10
           initialOrbitalParameters:
             semiMajorAxis: 4.321e7
-            eccentricity: 0
-            inclination: 0
+            eccentricity: 0.8
+            inclination: 1.5708
             perigreeArgument: 0
             raan: 0
             anomaly: 1.7
@@ -69,7 +81,7 @@ rootBody:
           initialOrbitalParameters:
             semiMajorAxis: 1.15e7
             eccentricity: 0
-            inclination: 0
+            inclination: 0.785398
             perigreeArgument: 0
             raan: 0
             anomaly: 1.7

@@ -1,66 +1,21 @@
-[gd_scene load_steps=11 format=3 uid="uid://bc08dhoyyn3kv"]
+[gd_scene load_steps=5 format=3 uid="uid://bc08dhoyyn3kv"]
 
-[ext_resource type="Script" path="res://scripts/fail/stderr/usb/SolarSystemNode3D.gdj" id="1_v14ct"]
+[ext_resource type="Script" path="res://scripts/fail/stderr/usb/GenericSystemNode3D.gdj" id="1_mgii7"]
 [ext_resource type="PackedScene" uid="uid://bm70ukdgodoue" path="res://ui.tscn" id="2_55vgb"]
 [ext_resource type="Script" path="res://ui.gd" id="3_3uqua"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_madtg"]
-albedo_color = Color(1, 0.772549, 0, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jc0y7"]
-albedo_color = Color(8.8125e-07, 0.692018, 0.228299, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1ht74"]
-albedo_color = Color(0.226707, 0.226707, 0.226707, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_78lsj"]
-albedo_color = Color(0.46529, 0.0385053, 5.3048e-08, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mcsiu"]
-albedo_color = Color(0.546319, 0.541703, 0, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3n6gs"]
-albedo_color = Color(0.726223, 2.79298e-06, 2.9599e-07, 1)
 
 [sub_resource type="Environment" id="Environment_6cwqa"]
 background_mode = 1
 background_color = Color(1, 1, 1, 1)
 
 [node name="SolarSystem" type="Node3D"]
-script = ExtResource("1_v14ct")
-
-[node name="Sun" type="CSGSphere3D" parent="."]
-radius = 4.0
-material = SubResource("StandardMaterial3D_madtg")
-
-[node name="Earth" type="CSGSphere3D" parent="Sun"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -33, 2.08165e-12, 143)
-radius = 2.0
-material = SubResource("StandardMaterial3D_jc0y7")
-
-[node name="Moon" type="CSGSphere3D" parent="Sun/Earth"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, -2.08165e-12, -143)
-radius = 1.0
-material = SubResource("StandardMaterial3D_1ht74")
-
-[node name="Mercury" type="CSGSphere3D" parent="Sun"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.994, 2.08165e-12, 141.045)
-radius = 2.0
-material = SubResource("StandardMaterial3D_78lsj")
-
-[node name="Venus" type="CSGSphere3D" parent="Sun"]
-radius = 2.0
-material = SubResource("StandardMaterial3D_mcsiu")
-
-[node name="Mars" type="CSGSphere3D" parent="Sun"]
-radius = 1.75
-material = SubResource("StandardMaterial3D_3n6gs")
+script = ExtResource("1_mgii7")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_6cwqa")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, -5.17882e-16, 3.05056e-16, 3.05056e-16, 0.87462, 0.48481, -5.17882e-16, -0.48481, 0.87462, 2.08165e-12, 175, 350)
+transform = Transform3D(1, -4.3906e-16, 3.36902e-16, 3.36902e-16, 0.965926, 0.258819, -4.3906e-16, -0.258819, 0.965926, 2.08165e-12, 35, 150)
 
 [node name="UI" parent="." instance=ExtResource("2_55vgb")]
 script = ExtResource("3_3uqua")

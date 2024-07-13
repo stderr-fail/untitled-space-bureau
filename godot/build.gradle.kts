@@ -14,7 +14,7 @@ dependencies {
   implementation("com.utopia-rise:godot-library-debug:${godotKotlinVersion}")
 
 //  implementation(project(":lib"))
-//  implementation(project(":solarsystem"))
+  implementation(project(":solarsystem"))
 }
 
 godot {
