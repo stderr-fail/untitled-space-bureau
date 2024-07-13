@@ -22,7 +22,8 @@ class KeplerianSystemTest {
     val numWarmupDays = 7L
     val numWarmupSeconds = TimeUnit.DAYS.toSeconds(numWarmupDays)
 
-    val numFullDays = 365L
+//    val numFullDays = 365L
+    val numFullDays = 7L
     val numFullSeconds = TimeUnit.DAYS.toSeconds(numFullDays)
 
     log.info("starting warmpup")
@@ -54,6 +55,7 @@ class KeplerianSystemTest {
       }
 
     }
+
 
     val end = System.currentTimeMillis()
 

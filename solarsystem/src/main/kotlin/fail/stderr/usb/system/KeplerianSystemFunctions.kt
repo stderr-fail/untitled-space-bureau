@@ -8,12 +8,12 @@ import fail.stderr.usb.data.system.SystemData
 import fail.stderr.usb.system.model.CelestialBodyHolder
 import fail.stderr.usb.system.model.DefaultCelestialBodyHolder
 import fail.stderr.usb.system.model.RootCelestialBodyHolder
+import fail.stderr.usb.time.CustomTimeScale
 import org.orekit.time.AbsoluteDate
-import org.orekit.time.TimeScaleFunctions
 
 fun createGenericSystem(name: String, data: SystemData): KeplerianSystem {
 
-  val timeScale = TimeScaleFunctions.createConstantOffsetTimeScale("${name}Time", 0.0)
+  val timeScale = CustomTimeScale("${name}Time", 0.0)
 
   val refDate = AbsoluteDate(1983, 7, 14, timeScale)
 
