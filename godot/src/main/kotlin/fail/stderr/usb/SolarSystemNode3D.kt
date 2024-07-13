@@ -130,36 +130,47 @@ class SolarSystemNode3D : Node3D() {
 
 
 //      val lerpWeight = 1 / 120.0 * delta
-      val lerpWeight = delta / (1 / 120.0)
+//      val lerpWeight = delta / (1 / 60.0)
+//      val moveWeight = delta * 1000000
 
       sim.earthVec?.let {
         val modifiedVec = it.div(1000000000.0)
 //      GD.print("moving earth to ${modifiedVec}")
-        earth.position = earth.position.lerp(modifiedVec, lerpWeight)
+//        earth.position = earth.position.lerp(modifiedVec, lerpWeight)
+//        earth.position = earth.position.moveToward(modifiedVec, moveWeight)
+        earth.position = modifiedVec
       }
 
       sim.moonVec?.let {
         val modifiedVec = it.div(1000000000.0) * 10
 //      GD.print("moving earth to ${modifiedVec}")
-        moon.position = moon.position.lerp(modifiedVec, lerpWeight)
+//        moon.position = moon.position.lerp(modifiedVec, lerpWeight)
+//        moon.position = moon.position.moveToward(modifiedVec, moveWeight)
+        moon.position = modifiedVec
       }
 
       sim.mercuryVec?.let {
         val modifiedVec = it.div(1000000000.0)
 //      GD.print("moving mercury to ${modifiedVec}")
-        mercury.position = mercury.position.lerp(modifiedVec, lerpWeight)
+//        mercury.position = mercury.position.lerp(modifiedVec, lerpWeight)
+//        mercury.position = mercury.position.moveToward(modifiedVec, moveWeight)
+        mercury.position = modifiedVec
       }
 
       sim.venusVec?.let {
         val modifiedVec = it.div(1000000000.0)
 //      GD.print("moving venus to ${modifiedVec}")
-        venus.position = venus.position.lerp(modifiedVec, lerpWeight)
+//        venus.position = venus.position.lerp(modifiedVec, lerpWeight)
+//        venus.position = venus.position.moveToward(modifiedVec, moveWeight)
+        venus.position = modifiedVec
       }
 
       sim.marsVec?.let {
         val modifiedVec = it.div(1000000000.0)
 //      GD.print("moving mars to ${modifiedVec}")
-        mars.position = mars.position.lerp(modifiedVec, lerpWeight)
+//        mars.position = mars.position.lerp(modifiedVec, lerpWeight)
+//        mars.position = mars.position.moveToward(modifiedVec, moveWeight)
+        mars.position = modifiedVec
       }
 
     } catch (e: Exception) {
