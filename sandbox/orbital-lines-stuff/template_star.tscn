@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://xi41nvaowayy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e6w28"]
+albedo_color = Color(1, 0.733333, 0.317647, 1)
+
+[node name="Root" type="Node3D"]
+
+[node name="Sphere" type="CSGSphere3D" parent="."]
+radius = 4.0
+material = SubResource("StandardMaterial3D_e6w28")

@@ -3,6 +3,11 @@ rootProject.name = "untitled-space-bureau"
 include("solarsystem")
 include("lib")
 include("godot")
+//include(":sandbox:orbital-lines-stuff")
+//project(":sandbox:orbital-lines-stuff").projectDir = File("sandbox/orbital-lines-stuff")
+include(":orbital-lines-stuff")
+project(":orbital-lines-stuff").projectDir = File("sandbox/orbital-lines-stuff")
+
 
 pluginManagement {
 

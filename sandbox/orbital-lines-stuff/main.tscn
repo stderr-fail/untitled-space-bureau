@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://bc08dhoyyn3kv"]
+
+[ext_resource type="Script" path="res://scripts/fail/stderr/usb/sandbox/GenericSystemNode3D.gdj" id="1_dqhlm"]
+[ext_resource type="PackedScene" uid="uid://d1kfe3oelr2c5" path="res://ui.tscn" id="1_ykwlq"]
+[ext_resource type="Script" path="res://ui.gd" id="3_hp4q1"]
+
+[sub_resource type="Environment" id="Environment_sus5a"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+
+[node name="SolarSystem" type="Node3D"]
+script = ExtResource("1_dqhlm")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_sus5a")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, -4.3906e-16, 3.36902e-16, 3.36902e-16, 0.965926, 0.258819, -4.3906e-16, -0.258819, 0.965926, 2.08165e-12, 35, 150)
+
+[node name="UI" parent="." instance=ExtResource("1_ykwlq")]
+script = ExtResource("3_hp4q1")
