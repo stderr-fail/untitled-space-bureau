@@ -17,4 +17,11 @@ Godot project settings > [advanced] > Editor > Run
 ```
 --jvm-debug-port=5005 --wait-for-debugger=false
 ```
+    
+
+# run Godot from Asahi Fedora
+
+1. Custom compile Godot + Godot/Kotlin (read instructions on Godot/Kotlin website, it's pretty easy)
+2. Launch Godot with flag `--rendering-driver opengl3` since Asahi Fedora doesn't have a Vulkan driver (yet)
+3. Update the Godot project settings for Rendering > Renderer > Rendering Method to `gl_compatability`
 

@@ -15,6 +15,7 @@ dependencies {
   implementation("org.slf4j:slf4j-api:2.0.13")
   implementation("org.orekit:orekit:12.1.1")
   implementation("com.networknt:json-schema-validator:1.5.0")
+  implementation("org.joml:joml:1.10.7")
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.3")

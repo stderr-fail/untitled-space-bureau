@@ -10,26 +10,12 @@ config_version=5
 
 [application]
 
-config/name="Untitled Space Bureau"
+config/name="3d-lines"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.2", "Forward Plus")
-run/max_fps=120
+config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
-
-[debug]
-
-settings/stdout/print_fps=true
-
-[display]
-
-window/size/viewport_width=1700
-window/size/viewport_height=1500
-
-[editor]
-
-run/main_run_args="--jvm-debug-port=5005 --wait-for-debugger=false"
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
-textures/vram_compression/import_etc2_astc=true
+renderer/rendering_method.mobile="gl_compatibility"
