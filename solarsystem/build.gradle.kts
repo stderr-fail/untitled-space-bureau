@@ -16,6 +16,8 @@ dependencies {
   implementation("org.orekit:orekit:12.1.1")
   implementation("com.networknt:json-schema-validator:1.5.0")
   implementation("org.joml:joml:1.10.7")
+  implementation("com.utopia-rise:godot-library-debug:${godotKotlinVersion}")
+
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.3")
