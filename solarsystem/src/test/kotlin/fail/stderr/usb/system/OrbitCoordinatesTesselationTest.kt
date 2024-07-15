@@ -48,7 +48,7 @@ class OrbitCoordinatesTesselationTest {
     val body = system.allCelestialBodies.get("Dwar") as DefaultCelestialBodyHolder
     val frame = system.refFrame
 
-    val segmentCount = 16
+    val segmentCount = 128
     val startDate = system.refDate
 
     val segmentTimeIncrement = Math.floor(body.orbit.keplerianPeriod / segmentCount).toLong() - 1L
