@@ -25,3 +25,10 @@ Godot project settings > [advanced] > Editor > Run
 2. Launch Godot with flag `--rendering-driver opengl3` since Asahi Fedora doesn't have a Vulkan driver (yet)
 3. Update the Godot project settings for Rendering > Renderer > Rendering Method to `gl_compatability`
 
+
+# Sandboxes
+
+## orbital-lines-stuff
+
+The **orbital-lines-stuff** sandbox holds PoC code for rendering orbital lines and Godot Camera3D code for 
+moving the camera along with mouse movements

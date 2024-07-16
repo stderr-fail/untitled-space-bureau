@@ -1,5 +1,5 @@
-val godotKotlinVersion by extra("0.9.1-4.2.2")
-val jacksonVersion by extra("2.17.2")
+val godotKotlinVersion: String by project
+val jacksonVersion: String by project
 
 plugins {
   java

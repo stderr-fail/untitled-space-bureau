@@ -1,8 +1,7 @@
-val godotKotlinVersion: String by rootProject.extra
+val godotKotlinVersion: String by project
 
 plugins {
-  // can't use godotKotlinVersion below because gradle is the biggest pile of excrement ever created
-  id("com.utopia-rise.godot-kotlin-jvm") version "0.9.1-4.2.2"
+  id("com.utopia-rise.godot-kotlin-jvm")
 }
 
 dependencies {

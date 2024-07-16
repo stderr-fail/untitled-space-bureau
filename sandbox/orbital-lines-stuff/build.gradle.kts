@@ -1,20 +1,42 @@
-val godotKotlinVersion: String by rootProject.extra
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+val godotKotlinVersion: String by project
 
 plugins {
     // can't use godotKotlinVersion below because gradle is the biggest pile of excrement ever created
-    id("com.utopia-rise.godot-kotlin-jvm") version "0.9.1-4.2.2"
+    id("com.utopia-rise.godot-kotlin-jvm")
 }
 
+//
+// force various tasks to skip up-to-date checks
+//
+
+//tasks.withType<ShadowJar>().configureEach {
+//    if (name == "shadowJar") {
+//        outputs.upToDateWhen { false }
+//    }
+//}
+
+//tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+//    // always run kspKotlin so Godot will detect updates
+//    if (name == "kspKotlin") {
+//        outputs.upToDateWhen { false }
+//    }
+//}
+
+
 dependencies {
+    implementation(project(":codegen"))
+    ksp(project(":codegen"))
+
+    implementation(project(":solarsystem"))
+
     implementation("ch.qos.logback:logback-classic:1.5.6")
     implementation("org.slf4j:slf4j-api:2.0.13")
 
     implementation("org.orekit:orekit:12.1.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
     implementation("com.utopia-rise:godot-library-debug:${godotKotlinVersion}")
-
-//  implementation(project(":lib"))
-    implementation(project(":solarsystem"))
 }
 
 godot {

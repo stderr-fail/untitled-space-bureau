@@ -56,7 +56,7 @@ class GenericSystemNode3D : Node3D() {
   override fun _ready() {
     try {
 
-      GD.print("ready")
+      GD.print("ready5")
 
 //      templatePlanet = GD.load<SceneTree>("res://template_planet.tscn")!!
 

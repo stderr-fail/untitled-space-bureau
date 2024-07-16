@@ -5,18 +5,29 @@ rootBody:
   name: "Dwarlux"
   mu: 1.23456789e18
   children:
+    - name: "Thing1"
+      mu: 6.7654321e10
+      initialOrbitalParameters:
+        semiMajorAxis: 4.87654321e10
+        eccentricity: 0.35
+        # -9 deg = -0.15708 rad
+        inclination: -0.15708
+        perigreeArgument: 0
+        # 123 deg = 2.14675 rad
+        raan: 2.14675
+        anomaly: 2.8
+
     - name: "Oddball"
       mu: 11.7654321e11
       initialOrbitalParameters:
         semiMajorAxis: 6.87654321e10
-        eccentricity: 0.7
-        # 73 deg = 1.27409 rad
-        inclination: 1.27409
+        eccentricity: 0.70
+        # 12 deg = 0.20944 rad
+        inclination: 0.575959
         perigreeArgument: 0
         # 123 deg = 2.14675 rad
         raan: 2.14675
         anomaly: 3.12
-
 
     - name: "Dwar"
       mu: 8.7654321e11
