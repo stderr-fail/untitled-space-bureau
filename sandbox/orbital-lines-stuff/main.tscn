@@ -1,26 +1,26 @@
-[gd_scene load_steps=5 format=3 uid="uid://bc08dhoyyn3kv"]
+[gd_scene load_steps=6 format=3 uid="uid://bc08dhoyyn3kv"]
 
 [ext_resource type="Script" path="res://scripts/fail/stderr/usb/sandbox/GenericSystemNode3D.gdj" id="1_dqhlm"]
 [ext_resource type="PackedScene" uid="uid://d1kfe3oelr2c5" path="res://ui.tscn" id="1_ykwlq"]
+[ext_resource type="Script" path="res://Camera3D.gd" id="2_54n55"]
 [ext_resource type="Script" path="res://ui.gd" id="3_hp4q1"]
 
 [sub_resource type="Environment" id="Environment_sus5a"]
 background_mode = 1
 background_color = Color(1, 1, 1, 1)
 
-[node name="SolarSystem" type="Node3D" node_paths=PackedStringArray("camera", "lines")]
-script = ExtResource("1_dqhlm")
-camera = NodePath("Camera3D")
-lines = NodePath("Lines")
+[node name="Root" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_sus5a")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, -4.3906e-16, 3.36902e-16, 3.36902e-16, 0.965926, 0.258819, -4.3906e-16, -0.258819, 0.965926, 2.08165e-12, 35, 150)
-
 [node name="UI" parent="." instance=ExtResource("1_ykwlq")]
 script = ExtResource("3_hp4q1")
+
+[node name="SolarSystem" type="Node3D" parent="." node_paths=PackedStringArray("camera", "lines")]
+script = ExtResource("1_dqhlm")
+camera = NodePath("../Camera3D")
+lines = NodePath("../Lines")
 
 [node name="Lines" type="Control" parent="."]
 layout_mode = 3
@@ -30,3 +30,65 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, -4.18324e-16, 3.41785e-16, 3.41785e-16, 0.979925, 0.199368, -4.18324e-16, -0.199368, 0.979925, 40, 40, 200)
+script = ExtResource("2_54n55")
+
+[node name="DebugPanel" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="DebugPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -114.0
+offset_bottom = 60.0
+grow_horizontal = 0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+
+[node name="GridContainer" type="GridContainer" parent="DebugPanel/MarginContainer"]
+layout_mode = 2
+columns = 6
+
+[node name="x" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+text = "x"
+
+[node name="xValLabel" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+
+[node name="y" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+text = "y"
+
+[node name="yValLabel" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+
+[node name="z" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+
+[node name="zValLabel" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+text = "x"

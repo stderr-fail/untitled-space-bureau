@@ -8,7 +8,7 @@ var sim: GenericSystemNode3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	sim = get_node("../")
+	sim = get_node("../SolarSystem")
 	
 	# watch for the slider change and convert it into a speed_changed signal
 	var slider = get_node("ColorRect/MarginContainer/VBoxContainer/HBoxContainer/SpeedSlider")

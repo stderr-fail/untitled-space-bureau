@@ -29,9 +29,12 @@ class GenericSystemNode3D : Node3D() {
   @RegisterProperty
   lateinit var lines: Control
 
+  @Export
+  @RegisterProperty
+  lateinit var systemRoot: Node3D
+
   var lineCache = mutableMapOf<String, Line2D>()
 
-  lateinit var systemRoot: Node3D
   var systemBodies: MutableMap<String, Node3D> = mutableMapOf()
 
   lateinit var dateLabel: Label
@@ -60,7 +63,12 @@ class GenericSystemNode3D : Node3D() {
       system = buildSystem()
 
       systemRoot = GodotStatic.templateStar.instantiate() as Node3D
+      systemRoot.name = "Star".asStringName()
       addChild(systemRoot)
+
+      GD.print("added Star")
+
+
 
       system.nonRootCelestialBodies.forEach { simBody ->
 
@@ -82,7 +90,7 @@ class GenericSystemNode3D : Node3D() {
       }
 
 
-      dateLabel = getNode("UI/ColorRect/MarginContainer/VBoxContainer/DateContainer/DateLabel".asNodePath()) as Label
+      dateLabel = getNode("../UI/ColorRect/MarginContainer/VBoxContainer/DateContainer/DateLabel".asNodePath()) as Label
 
       initialDate = system.refDate
       currentDate = initialDate
@@ -134,17 +142,11 @@ class GenericSystemNode3D : Node3D() {
 
       val lineExisted = lineCache.containsKey(body.name)
 
-
-//      if (lineExisted) {
-//        continue
-//      }
-
       val line = lineCache.getOrPut(body.name) { Line2D() }
 
       if (lineExisted) {
         line.clearPoints();
       }
-
 
       val vec2s = mutableListOf<Vector2>()
 
@@ -169,11 +171,9 @@ class GenericSystemNode3D : Node3D() {
 
 
       if (!lineExisted) {
-
-
         line.width = 3.0f
         line.closed = true
-        line.defaultColor = Color.orangeRed
+        line.defaultColor = Color(Color.darkGray, 0.5)
         line.visible = true
         lines.addChild(line)
 
@@ -229,7 +229,7 @@ class GenericSystemNode3D : Node3D() {
 
       bodyNode.position = scaledVec
       if (iteration % 1000 === 0L) {
-        GD.print("moving1 ${simBody.name} to ${scaledVec} scaledVec.d=${scaledVec.length()}")
+//        GD.print("moving1 ${simBody.name} to ${scaledVec} scaledVec.d=${scaledVec.length()}")
       }
     }
   }
