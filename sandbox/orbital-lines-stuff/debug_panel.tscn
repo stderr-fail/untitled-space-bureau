@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=3 uid="uid://bi803kkhwkx3x"]
+
+[ext_resource type="Script" path="res://debug_panel_logic.gd" id="1_wrmi8"]
+
+[node name="Root" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_wrmi8")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BodySelection" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Label" type="Label" parent="Margin/BodySelection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "Follow Body"
+
+[node name="BodySelectors" type="VBoxContainer" parent="Margin/BodySelection"]
+layout_mode = 2

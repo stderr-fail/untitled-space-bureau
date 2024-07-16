@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.floor
 
 
-@RegisterClass
+@RegisterClass(className = "GenericSystemNode3D")
 class GenericSystemNode3D : Node3D() {
 
   @Export
@@ -29,9 +29,11 @@ class GenericSystemNode3D : Node3D() {
   @RegisterProperty
   lateinit var lines: Control
 
-  @Export
   @RegisterProperty
   lateinit var systemRoot: Node3D
+
+  @RegisterProperty
+  var bodiesDict: Dictionary<String, Node3D> = Dictionary()
 
   var lineCache = mutableMapOf<String, Line2D>()
 
@@ -63,16 +65,20 @@ class GenericSystemNode3D : Node3D() {
       system = buildSystem()
 
       systemRoot = GodotStatic.templateStar.instantiate() as Node3D
-      systemRoot.name = "Star".asStringName()
+//      systemRoot.name = "Star".asStringName()
+      systemRoot.name = system.rootBody.name.asStringName()
       addChild(systemRoot)
+      systemRoot.owner = this
+
+      bodiesDict.put(system.rootBody.name, systemRoot)
 
       GD.print("added Star")
-
 
 
       system.nonRootCelestialBodies.forEach { simBody ->
 
         val planetNode = GodotStatic.templatePlanet.instantiate() as Node3D
+        planetNode.name = simBody.name.asStringName()
 
         var parentNode = systemRoot
 
@@ -86,7 +92,9 @@ class GenericSystemNode3D : Node3D() {
         }
 
         systemBodies.put(simBody.name, planetNode)
+        bodiesDict.put(simBody.name, planetNode)
         parentNode.addChild(planetNode)
+        planetNode.owner = parentNode
       }
 
 

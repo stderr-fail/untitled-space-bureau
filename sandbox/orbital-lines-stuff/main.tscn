@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bc08dhoyyn3kv"]
+[gd_scene load_steps=7 format=3 uid="uid://bc08dhoyyn3kv"]
 
-[ext_resource type="Script" path="res://scripts/fail/stderr/usb/sandbox/GenericSystemNode3D.gdj" id="1_dqhlm"]
 [ext_resource type="PackedScene" uid="uid://d1kfe3oelr2c5" path="res://ui.tscn" id="1_ykwlq"]
 [ext_resource type="Script" path="res://Camera3D.gd" id="2_54n55"]
 [ext_resource type="Script" path="res://ui.gd" id="3_hp4q1"]
+[ext_resource type="Script" path="res://scripts/fail/stderr/usb/sandbox/GenericSystemNode3D.gdj" id="3_ij7mv"]
+[ext_resource type="PackedScene" uid="uid://bi803kkhwkx3x" path="res://debug_panel.tscn" id="5_x0y65"]
 
 [sub_resource type="Environment" id="Environment_sus5a"]
 background_mode = 1
@@ -18,7 +19,7 @@ environment = SubResource("Environment_sus5a")
 script = ExtResource("3_hp4q1")
 
 [node name="SolarSystem" type="Node3D" parent="." node_paths=PackedStringArray("camera", "lines")]
-script = ExtResource("1_dqhlm")
+script = ExtResource("3_ij7mv")
 camera = NodePath("../Camera3D")
 lines = NodePath("../Lines")
 
@@ -35,7 +36,7 @@ mouse_filter = 2
 transform = Transform3D(1, -4.18324e-16, 3.41785e-16, 3.41785e-16, 0.979925, 0.199368, -4.18324e-16, -0.199368, 0.979925, 40, 40, 200)
 script = ExtResource("2_54n55")
 
-[node name="DebugPanel" type="Control" parent="."]
+[node name="DebugPanelz" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,7 +45,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="DebugPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="DebugPanelz"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -56,41 +57,43 @@ theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
 
-[node name="GridContainer" type="GridContainer" parent="DebugPanel/MarginContainer"]
+[node name="GridContainer" type="GridContainer" parent="DebugPanelz/MarginContainer"]
 layout_mode = 2
 columns = 6
 
-[node name="x" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+[node name="x" type="Label" parent="DebugPanelz/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 25
 text = "x"
 
-[node name="xValLabel" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+[node name="xValLabel" type="Label" parent="DebugPanelz/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 25
 
-[node name="y" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+[node name="y" type="Label" parent="DebugPanelz/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 25
 text = "y"
 
-[node name="yValLabel" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+[node name="yValLabel" type="Label" parent="DebugPanelz/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 25
 
-[node name="z" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+[node name="z" type="Label" parent="DebugPanelz/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 25
 
-[node name="zValLabel" type="Label" parent="DebugPanel/MarginContainer/GridContainer"]
+[node name="zValLabel" type="Label" parent="DebugPanelz/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 25
 text = "x"
 
-[node name="Node" type="Node" parent="."]
+[node name="DebugPanel" parent="." node_paths=PackedStringArray("sim", "camera") instance=ExtResource("5_x0y65")]
+sim = NodePath("../SolarSystem")
+camera = NodePath("../Camera3D")

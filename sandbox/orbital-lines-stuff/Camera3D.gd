@@ -1,37 +1,57 @@
+class_name FollowCamera
+
 extends Camera3D
 
 @export var sensitivity: float = 0.3
 
 var rotating: bool = false
 var tracked_rotation: Vector3
+var tracked_distance: float = 0.0
+var tracked_direction: Vector3
 
-@onready var xValLabel = get_node("../DebugPanel/MarginContainer/GridContainer/xValLabel")
-@onready var yValLabel = get_node("../DebugPanel/MarginContainer/GridContainer/yValLabel")
-@onready var zValLabel = get_node("../DebugPanel/MarginContainer/GridContainer/zValLabel")
+@onready var xValLabel = get_node("../DebugPanelz/MarginContainer/GridContainer/xValLabel")
+@onready var yValLabel = get_node("../DebugPanelz/MarginContainer/GridContainer/yValLabel")
+@onready var zValLabel = get_node("../DebugPanelz/MarginContainer/GridContainer/zValLabel")
 
-# Reference to the star (center of the solar system)
-var star: Node3D
+# Reference to the focal point node
+var focus_node: Node3D
 
 func _process(delta):
-	updateLabels()
+	update_labels()
+	update_camera()
 	
-func updateLabels():
+func followNode(bodyName: String):
+	var systemNode = get_node("../SolarSystem")
+	print("systemNode %s" % systemNode)
+	focus_node = systemNode.find_child(bodyName, true) as Node3D
+	print("focus_node bodyName=%s was %s" % [bodyName, focus_node])
+	
+	#focus_node = get_node("../SolarSystem/Dwarlux/%s" % bodyName) as Node3D
+	look_at(focus_node.global_transform.origin, Vector3.UP)
+	
+	
+func update_labels():
 	xValLabel.text = "%d" % position.x
 	yValLabel.text = "%d" % position.y
 	zValLabel.text = "%d" % position.z
 
 func _ready():
 
-
-	star = get_node("../SolarSystem/Star") as Node3D
-	look_at(star.global_transform.origin, Vector3.UP)
+	focus_node = get_node("../SolarSystem/Dwarlux") as Node3D
+	look_at(focus_node.global_transform.origin, Vector3.UP)
+	tracked_distance = (global_transform.origin - focus_node.global_transform.origin).length()
 	
 	# setup initial rotation based on current camera state
-	var to_star = (global_transform.origin - star.global_transform.origin).normalized()
-	tracked_rotation.y = atan2(to_star.x, to_star.z)
-	tracked_rotation.x = asin(to_star.y)
-
-
+	var to_focus_node = (global_transform.origin - focus_node.global_transform.origin).normalized()
+	
+	tracked_rotation.y = atan2(to_focus_node.x, to_focus_node.z)
+	tracked_rotation.x = asin(to_focus_node.y)
+	
+	tracked_direction = Vector3(
+		sin(tracked_rotation.y) * cos(tracked_rotation.x), 
+		sin(tracked_rotation.x), 
+		cos(tracked_rotation.y) * cos(tracked_rotation.x)
+	)
 
 func _input(event):
 	if event is InputEventKey:
@@ -47,18 +67,19 @@ func _input(event):
 		tracked_rotation.y -= event.relative.x * sensitivity * 0.01
 		tracked_rotation.x -= event.relative.y * sensitivity * 0.01
 		tracked_rotation.x = clamp(tracked_rotation.x, -PI / 2, PI / 2)
+		
+		tracked_direction = Vector3(
+			sin(tracked_rotation.y) * cos(tracked_rotation.x), 
+			sin(tracked_rotation.x), 
+			cos(tracked_rotation.y) * cos(tracked_rotation.x)
+		)
+		
 		update_camera()
 
-func update_camera():
-	
-	var direction = Vector3(
-		sin(tracked_rotation.y) * cos(tracked_rotation.x), 
-		sin(tracked_rotation.x), 
-		cos(tracked_rotation.y) * cos(tracked_rotation.x)
-	)
-	
-	var distance = (global_transform.origin - star.global_transform.origin).length()
-	var nextOrigin = star.global_transform.origin + direction * distance
-
+func update_camera():		
+	var nextOrigin = focus_node.global_transform.origin + tracked_direction * tracked_distance
 	global_transform.origin = nextOrigin
-	look_at(star.global_transform.origin, Vector3.UP)
+	
+	# must be last, after the global_transform.origin update
+	if rotating:
+		look_at(focus_node.global_transform.origin, Vector3.UP)
