@@ -40,7 +40,7 @@ class OrbitCoordinatesTesselationTest {
         ),
         Vector3(0, 3, 20),
       ),
-      viewportSize = Vector2(1200, 1200),
+      viewportSize = Vector2i(1200, 1200),
     )
 
     val system = buildSystem()

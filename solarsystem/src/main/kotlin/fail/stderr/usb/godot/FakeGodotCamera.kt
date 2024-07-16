@@ -9,7 +9,7 @@ class FakeGodotCamera(
   val cameraProjection: Projection,
   val cameraTransform: Transform3D,
   val globalTransform: Transform3D,
-  val viewportSize: Vector2,
+  val viewportSize: Vector2i,
   val near: Double = 0.05,
 ) {
 

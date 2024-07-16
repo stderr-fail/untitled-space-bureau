@@ -1,22 +1,35 @@
 package fail.stderr.usb.sandbox
 
+import fail.stderr.usb.godot.FakeGodotCamera
 import fail.stderr.usb.system.KeplerianSystem
 import fail.stderr.usb.system.SystemDataUtils
 import fail.stderr.usb.system.createGenericSystem
 import godot.*
+import godot.annotation.Export
 import godot.annotation.RegisterClass
 import godot.annotation.RegisterFunction
-import godot.core.Vector3
-import godot.core.asNodePath
+import godot.annotation.RegisterProperty
+import godot.core.*
 import godot.extensions.godotStatic
 import godot.global.GD
 import org.orekit.time.AbsoluteDate
 import java.lang.Thread
 import java.util.concurrent.TimeUnit
+import kotlin.math.floor
 
 
 @RegisterClass
 class GenericSystemNode3D : Node3D() {
+
+  @Export
+  @RegisterProperty
+  lateinit var camera: Camera3D
+
+  @Export
+  @RegisterProperty
+  lateinit var lines: Control
+
+  var lineCache = mutableMapOf<String, Line2D>()
 
   lateinit var systemRoot: Node3D
   var systemBodies: MutableMap<String, Node3D> = mutableMapOf()
@@ -53,7 +66,7 @@ class GenericSystemNode3D : Node3D() {
 
         val planetNode = GodotStatic.templatePlanet.instantiate() as Node3D
 
-      var parentNode = systemRoot
+        var parentNode = systemRoot
 
         if (simBody.parent !== system.rootBody) {
           // is a moon, lookup parent node
@@ -85,7 +98,6 @@ class GenericSystemNode3D : Node3D() {
   @RegisterFunction
   fun speedChanged(value: Int) {
     try {
-      GD.print("speedChanged")
       speed = value
     } catch (e: Exception) {
       GD.printErr(e)
@@ -95,53 +107,131 @@ class GenericSystemNode3D : Node3D() {
   @RegisterFunction
   override fun _process(delta: Double) {
     try {
-//      GD.print("process")
       time += delta
-
-//      val deltaMillis = delta * 1000.0
-      var deltaSeconds = delta
-      deltaSeconds *= speed
-
-      accumulatedSeconds += deltaSeconds
-
-      if (accumulatedSeconds >= 1.0) {
-
-        val shiftBySeconds = Math.floor(accumulatedSeconds)
-
-        accumulatedSeconds %= 1.0
-
-        currentDate = currentDate.shiftedBy(shiftBySeconds.toLong(), TimeUnit.SECONDS)
-        dateLabel.text = "Date: ${currentDate}"
-
-      }
-
-      iteration++
-
-      system.nonRootCelestialBodies.forEach { simBody ->
-        val pv = simBody.orbit.getPVCoordinates(currentDate, simBody.parent.frame)
-        val p = pv.position
-
-        val vec = Vector3(p.x, p.z, p.y)
-        var scaledVec = vec.div(1000000000.0)
-
-        if (simBody.parent !== system.rootBody) {
-          // is a moon
-          scaledVec *= 200
-        }
-
-        val bodyNode = systemBodies.get(simBody.name)!!
-
-        bodyNode.position = scaledVec
-        if (iteration % 1000 === 0L) {
-          GD.print("moving1 ${simBody.name} to ${scaledVec} scaledVec.d=${scaledVec.length()}")
-        }
-      }
-
-
+      renderPlanets(delta)
+      renderOrbitLines(delta)
     } catch (e: Exception) {
       GD.printErr(e)
     }
+  }
 
+  fun renderOrbitLines(delta: Double) {
+
+    var fakeCamera = FakeGodotCamera(
+      cameraProjection = camera.getCameraProjection(),
+      cameraTransform = camera.getCameraTransform(),
+      globalTransform = camera.globalTransform,
+      viewportSize = camera.getWindow()!!.size,
+    )
+
+    val segmentCount = 128
+    val startDate = system.refDate
+    val frame = system.refFrame
+
+    for (bodyIndex in 0..<system.nonRootCelestialBodies.size) {
+
+      val body = system.nonRootCelestialBodies[bodyIndex]
+
+      val lineExisted = lineCache.containsKey(body.name)
+
+
+//      if (lineExisted) {
+//        continue
+//      }
+
+      val line = lineCache.getOrPut(body.name) { Line2D() }
+
+      if (lineExisted) {
+        line.clearPoints();
+      }
+
+
+      val vec2s = mutableListOf<Vector2>()
+
+      val segmentTimeIncrement = floor(body.orbit.keplerianPeriod / segmentCount).toLong()
+
+      for (segmentIndex in 0..<segmentCount) {
+
+        val date = startDate.shiftedBy(segmentTimeIncrement * segmentIndex, TimeUnit.SECONDS)
+        val pv = body.orbit.getPVCoordinates(date, frame)
+
+        // flip y/z for godot 3d coordinates
+        var v3 = Vector3(pv.position.x, pv.position.z, pv.position.y)
+
+        var v3scaled = v3.div(1_000_000_000)
+
+        val pos2d = camera.unprojectPosition(v3scaled)
+        val pos2d2 = fakeCamera.unprojectPosition(v3scaled)
+
+        vec2s.add(pos2d)
+        line.addPoint(pos2d)
+      }
+
+
+      if (!lineExisted) {
+
+
+        line.width = 3.0f
+        line.closed = true
+        line.defaultColor = Color.orangeRed
+        line.visible = true
+        lines.addChild(line)
+
+      }
+
+//      line.points = vec2s
+
+//      GD.print("adding Line2D for body ${body.name}")
+//      for (vec2 in vec2s) {
+//        GD.print("    ${vec2}")
+//      }
+
+
+
+
+    }
+
+  }
+
+  fun renderPlanets(delta: Double) {
+
+    var deltaSeconds = delta
+    deltaSeconds *= speed
+
+    accumulatedSeconds += deltaSeconds
+
+    if (accumulatedSeconds >= 1.0) {
+
+      val shiftBySeconds = Math.floor(accumulatedSeconds)
+
+      accumulatedSeconds %= 1.0
+
+      currentDate = currentDate.shiftedBy(shiftBySeconds.toLong(), TimeUnit.SECONDS)
+      dateLabel.text = "Date: ${currentDate}"
+
+    }
+
+    iteration++
+
+    for (simBody in system.nonRootCelestialBodies) {
+      val pv = simBody.orbit.getPVCoordinates(currentDate, simBody.parent.frame)
+      val p = pv.position
+
+      val vec = Vector3(p.x, p.z, p.y)
+      var scaledVec = vec.div(1000000000.0)
+
+      if (simBody.parent !== system.rootBody) {
+        // is a moon
+        scaledVec *= 200
+      }
+
+      val bodyNode = systemBodies.get(simBody.name)!!
+
+      bodyNode.position = scaledVec
+      if (iteration % 1000 === 0L) {
+        GD.print("moving1 ${simBody.name} to ${scaledVec} scaledVec.d=${scaledVec.length()}")
+      }
+    }
   }
 
 }

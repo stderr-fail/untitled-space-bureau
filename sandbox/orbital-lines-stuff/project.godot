@@ -15,10 +15,18 @@ run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
+[debug]
+
+settings/stdout/print_fps=true
+
 [display]
 
 window/size/viewport_width=1600
 window/size/viewport_height=1600
+
+[editor]
+
+run/main_run_args="--jvm-debug-port=5005 --wait-for-debugger=false"
 
 [rendering]
 

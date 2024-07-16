@@ -8,8 +8,10 @@
 background_mode = 1
 background_color = Color(1, 1, 1, 1)
 
-[node name="SolarSystem" type="Node3D"]
+[node name="SolarSystem" type="Node3D" node_paths=PackedStringArray("camera", "lines")]
 script = ExtResource("1_dqhlm")
+camera = NodePath("Camera3D")
+lines = NodePath("Lines")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_sus5a")
@@ -19,3 +21,12 @@ transform = Transform3D(1, -4.3906e-16, 3.36902e-16, 3.36902e-16, 0.965926, 0.25
 
 [node name="UI" parent="." instance=ExtResource("1_ykwlq")]
 script = ExtResource("3_hp4q1")
+
+[node name="Lines" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
