@@ -1,5 +1,6 @@
 package fail.stderr.usb.sandbox
 
+import fail.stderr.usb.data.system.CelestialBodyType
 import fail.stderr.usb.godot.FakeGodotCamera
 import fail.stderr.usb.system.KeplerianSystem
 import fail.stderr.usb.system.SystemDataUtils
@@ -12,6 +13,7 @@ import godot.annotation.RegisterProperty
 import godot.core.*
 import godot.extensions.godotStatic
 import godot.global.GD
+import org.hipparchus.geometry.euclidean.threed.Vector3D
 import org.orekit.time.AbsoluteDate
 import java.lang.Thread
 import java.util.concurrent.TimeUnit
@@ -43,6 +45,9 @@ class GenericSystemNode3D : Node3D() {
 
   lateinit var system: KeplerianSystem
 
+  var systemDistanceScaleReduction = 1_000_000_000.0
+  var moonDistanceScaleIncrease = 400.0
+
   var time: Double = 0.0
   var speed: Int = 1
 
@@ -60,12 +65,9 @@ class GenericSystemNode3D : Node3D() {
 
       GD.print("ready5")
 
-//      templatePlanet = GD.load<SceneTree>("res://template_planet.tscn")!!
-
       system = buildSystem()
 
       systemRoot = GodotStatic.templateStar.instantiate() as Node3D
-//      systemRoot.name = "Star".asStringName()
       systemRoot.name = system.rootBody.name.asStringName()
       addChild(systemRoot)
       systemRoot.owner = this
@@ -140,13 +142,15 @@ class GenericSystemNode3D : Node3D() {
       viewportSize = camera.getWindow()!!.size,
     )
 
-    val segmentCount = 128
-    val startDate = system.refDate
+    val segmentCount = 256
     val frame = system.refFrame
+    val startDate = system.refDate
 
     for (bodyIndex in 0..<system.nonRootCelestialBodies.size) {
 
       val body = system.nonRootCelestialBodies[bodyIndex]
+
+      val parentNode = systemBodies.get(body.parent.name)
 
       val lineExisted = lineCache.containsKey(body.name)
 
@@ -160,18 +164,39 @@ class GenericSystemNode3D : Node3D() {
 
       val segmentTimeIncrement = floor(body.orbit.keplerianPeriod / segmentCount).toLong()
 
+
       for (segmentIndex in 0..<segmentCount) {
 
         val date = startDate.shiftedBy(segmentTimeIncrement * segmentIndex, TimeUnit.SECONDS)
-        val pv = body.orbit.getPVCoordinates(date, frame)
 
-        // flip y/z for godot 3d coordinates
-        var v3 = Vector3(pv.position.x, pv.position.z, pv.position.y)
+        val parentRelativePosition = body.orbit.getPosition(date, body.parent.frame)
 
-        var v3scaled = v3.div(1_000_000_000)
+        var scaledParentRelativePosition = Vector3D(
+          parentRelativePosition.x / systemDistanceScaleReduction,
+          parentRelativePosition.y / systemDistanceScaleReduction,
+          parentRelativePosition.z / systemDistanceScaleReduction,
+        )
 
-        val pos2d = camera.unprojectPosition(v3scaled)
-        val pos2d2 = fakeCamera.unprojectPosition(v3scaled)
+        // if moon...
+        if (body.data.type == CelestialBodyType.MOON) {
+
+          // scale up moon distance
+          scaledParentRelativePosition = Vector3D(
+            scaledParentRelativePosition.x * moonDistanceScaleIncrease,
+            scaledParentRelativePosition.y * moonDistanceScaleIncrease,
+            scaledParentRelativePosition.z * moonDistanceScaleIncrease,
+          )
+
+        }
+
+        val systemRelativePosition = when {
+          body.parent === system.rootBody -> Vector3(scaledParentRelativePosition.x, scaledParentRelativePosition.z, scaledParentRelativePosition.y)
+          else -> parentNode!!.position + Vector3(scaledParentRelativePosition.x, scaledParentRelativePosition.z, scaledParentRelativePosition.y)
+        }
+
+        // TODO: benchmark Camera3D vs FakeCamera unprojectPosition perf
+//        val pos2d = camera.unprojectPosition(systemRelativePosition)
+        val pos2d = fakeCamera.unprojectPosition(systemRelativePosition)
 
         vec2s.add(pos2d)
         line.addPoint(pos2d)
@@ -184,18 +209,7 @@ class GenericSystemNode3D : Node3D() {
         line.defaultColor = Color(Color.darkGray, 0.5)
         line.visible = true
         lines.addChild(line)
-
       }
-
-//      line.points = vec2s
-
-//      GD.print("adding Line2D for body ${body.name}")
-//      for (vec2 in vec2s) {
-//        GD.print("    ${vec2}")
-//      }
-
-
-
 
     }
 
@@ -222,15 +236,14 @@ class GenericSystemNode3D : Node3D() {
     iteration++
 
     for (simBody in system.nonRootCelestialBodies) {
-      val pv = simBody.orbit.getPVCoordinates(currentDate, simBody.parent.frame)
-      val p = pv.position
+      val p = simBody.orbit.getPosition(currentDate, simBody.parent.frame)
 
       val vec = Vector3(p.x, p.z, p.y)
-      var scaledVec = vec.div(1000000000.0)
+      var scaledVec = vec.div(systemDistanceScaleReduction)
 
       if (simBody.parent !== system.rootBody) {
         // is a moon
-        scaledVec *= 200
+        scaledVec *= moonDistanceScaleIncrease
       }
 
       val bodyNode = systemBodies.get(simBody.name)!!

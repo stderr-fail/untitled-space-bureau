@@ -7,6 +7,7 @@
   "required": [
     "name",
     "mu",
+    "type",
     "initialOrbitalParameters",
   ],
   "properties": {
@@ -17,6 +18,15 @@
     "mu": {
       "type": "number",
       "description": "The bodies gravitational constant",
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "STAR",
+        "PLANET",
+        "MOON",
+        "SATELLITE",
+      ],
     },
     "initialOrbitalParameters": {
       "$ref": "https://stderr.fail/schemas/KeplerianOrbitalParameters",

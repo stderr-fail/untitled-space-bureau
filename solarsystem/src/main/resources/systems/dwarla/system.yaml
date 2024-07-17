@@ -4,9 +4,11 @@ name: "Dwarla"
 rootBody:
   name: "Dwarlux"
   mu: 1.23456789e18
+  type: STAR
   children:
     - name: "Thing1"
       mu: 6.7654321e10
+      type: PLANET
       initialOrbitalParameters:
         semiMajorAxis: 4.87654321e10
         eccentricity: 0.35
@@ -19,6 +21,7 @@ rootBody:
 
     - name: "Oddball"
       mu: 11.7654321e11
+      type: PLANET
       initialOrbitalParameters:
         semiMajorAxis: 6.87654321e10
         eccentricity: 0.70
@@ -31,6 +34,7 @@ rootBody:
 
     - name: "Dwar"
       mu: 8.7654321e11
+      type: PLANET
       initialOrbitalParameters:
         semiMajorAxis: 9.87654321e10
         eccentricity: 0.075
@@ -43,6 +47,7 @@ rootBody:
       children:
         - name: "Dwobos"
           mu: 7.161e5
+          type: MOON
           initialOrbitalParameters:
             semiMajorAxis: 9.376e6
             eccentricity: 0.0151
@@ -56,6 +61,7 @@ rootBody:
             anomaly: 3.265633204
         - name: "Dwimos"
           mu: 9.64e4
+          type: MOON
           initialOrbitalParameters:
             semiMajorAxis: 2.34632e7
             eccentricity: 0.00033
@@ -70,6 +76,7 @@ rootBody:
 
     - name: "Dwarlin"
       mu: 3.21e12
+      type: PLANET
       initialOrbitalParameters:
         semiMajorAxis: 6.3599840256e10
         eccentricity: 0.5
@@ -79,6 +86,7 @@ rootBody:
         anomaly: 3.14
       children:
         - name: "Dweeb"
+          type: MOON
           mu: 6.54321e10
           initialOrbitalParameters:
             semiMajorAxis: 4.321e7
@@ -88,6 +96,7 @@ rootBody:
             raan: 0
             anomaly: 1.7
         - name: "Dwun"
+          type: MOON
           mu: 6.54321e11
           initialOrbitalParameters:
             semiMajorAxis: 1.15e7
@@ -98,6 +107,7 @@ rootBody:
             anomaly: 1.7
           children:
             - name: "Dwunette"
+              type: MOON
               mu: 9.876e8
               initialOrbitalParameters:
                 semiMajorAxis: 6.54321e5

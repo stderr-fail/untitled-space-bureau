@@ -13,7 +13,7 @@ var checkboxTemplate = preload("res://template_checkbox.tscn")
 
 func bodySelected(button: BaseButton):
 	#print("bodySelected %s" % button.text)
-	camera.followNode(button.text)
+	camera.followNode(button.text, false)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

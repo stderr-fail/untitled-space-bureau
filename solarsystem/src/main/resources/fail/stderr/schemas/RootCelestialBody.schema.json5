@@ -6,6 +6,7 @@
   "additionalProperties": false,
   "required": [
     "name",
+    "type",
     "mu",
   ],
   "properties": {
@@ -16,6 +17,12 @@
     "mu": {
       "type": "number",
       "description": "The bodies gravitational constant",
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "STAR",
+      ],
     },
     "children": {
       "type": "array",

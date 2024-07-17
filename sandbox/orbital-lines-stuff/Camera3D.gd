@@ -16,42 +16,12 @@ var tracked_direction: Vector3
 # Reference to the focal point node
 var focus_node: Node3D
 
+func _ready():
+	followNode("Dwarlux", true)
+
 func _process(delta):
 	update_labels()
 	update_camera()
-	
-func followNode(bodyName: String):
-	var systemNode = get_node("../SolarSystem")
-	print("systemNode %s" % systemNode)
-	focus_node = systemNode.find_child(bodyName, true) as Node3D
-	print("focus_node bodyName=%s was %s" % [bodyName, focus_node])
-	
-	#focus_node = get_node("../SolarSystem/Dwarlux/%s" % bodyName) as Node3D
-	look_at(focus_node.global_transform.origin, Vector3.UP)
-	
-	
-func update_labels():
-	xValLabel.text = "%d" % position.x
-	yValLabel.text = "%d" % position.y
-	zValLabel.text = "%d" % position.z
-
-func _ready():
-
-	focus_node = get_node("../SolarSystem/Dwarlux") as Node3D
-	look_at(focus_node.global_transform.origin, Vector3.UP)
-	tracked_distance = (global_transform.origin - focus_node.global_transform.origin).length()
-	
-	# setup initial rotation based on current camera state
-	var to_focus_node = (global_transform.origin - focus_node.global_transform.origin).normalized()
-	
-	tracked_rotation.y = atan2(to_focus_node.x, to_focus_node.z)
-	tracked_rotation.x = asin(to_focus_node.y)
-	
-	tracked_direction = Vector3(
-		sin(tracked_rotation.y) * cos(tracked_rotation.x), 
-		sin(tracked_rotation.x), 
-		cos(tracked_rotation.y) * cos(tracked_rotation.x)
-	)
 
 func _input(event):
 	if event is InputEventKey:
@@ -75,6 +45,33 @@ func _input(event):
 		)
 		
 		update_camera()
+
+func followNode(bodyName: String, calc_tracked_distance: bool):
+	var systemNode = get_node("../SolarSystem")
+	focus_node = systemNode.find_child(bodyName, true) as Node3D
+	look_at(focus_node.global_transform.origin, Vector3.UP)
+	
+	if calc_tracked_distance:
+		tracked_distance = (global_transform.origin - focus_node.global_transform.origin).length()
+	
+	# setup initial rotation based on current camera state
+	var to_focus_node = (global_transform.origin - focus_node.global_transform.origin).normalized()
+	
+	tracked_rotation.y = atan2(to_focus_node.x, to_focus_node.z)
+	tracked_rotation.x = asin(to_focus_node.y)
+	
+	tracked_direction = Vector3(
+		sin(tracked_rotation.y) * cos(tracked_rotation.x), 
+		sin(tracked_rotation.x), 
+		cos(tracked_rotation.y) * cos(tracked_rotation.x)
+	)
+	
+	update_camera()
+	
+func update_labels():
+	xValLabel.text = "%d" % position.x
+	yValLabel.text = "%d" % position.y
+	zValLabel.text = "%d" % position.z
 
 func update_camera():		
 	var nextOrigin = focus_node.global_transform.origin + tracked_direction * tracked_distance
