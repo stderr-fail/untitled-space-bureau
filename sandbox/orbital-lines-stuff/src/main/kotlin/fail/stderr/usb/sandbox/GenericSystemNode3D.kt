@@ -199,9 +199,9 @@ class GenericSystemNode3D : Node3D() {
         val pos2d = fakeCamera.unprojectPosition(systemRelativePosition)
 
         vec2s.add(pos2d)
-        line.addPoint(pos2d)
       }
 
+      vec2s.forEach(line::addPoint)
 
       if (!lineExisted) {
         line.width = 3.0f
