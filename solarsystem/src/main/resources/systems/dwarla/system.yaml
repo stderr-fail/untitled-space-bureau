@@ -110,7 +110,7 @@ rootBody:
               type: MOON
               mu: 9.876e8
               initialOrbitalParameters:
-                semiMajorAxis: 6.54321e5
+                semiMajorAxis: 6.54321e6
                 eccentricity: 0
                 inclination: 0
                 perigreeArgument: 0

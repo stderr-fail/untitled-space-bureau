@@ -19,7 +19,7 @@ var focus_node: Node3D
 func _ready():
 	followNode("Dwarlux", true)
 
-func _process(delta):
+func _process(_delta):
 	update_labels()
 	update_camera()
 

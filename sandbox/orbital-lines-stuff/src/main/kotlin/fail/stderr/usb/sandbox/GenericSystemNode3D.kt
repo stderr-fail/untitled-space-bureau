@@ -5,6 +5,7 @@ import fail.stderr.usb.godot.FakeGodotCamera
 import fail.stderr.usb.system.KeplerianSystem
 import fail.stderr.usb.system.SystemDataUtils
 import fail.stderr.usb.system.createGenericSystem
+import fail.stderr.usb.system.model.DefaultCelestialBodyHolder
 import godot.*
 import godot.annotation.Export
 import godot.annotation.RegisterClass
@@ -31,6 +32,10 @@ class GenericSystemNode3D : Node3D() {
   @RegisterProperty
   lateinit var lines: Control
 
+  @Export
+  @RegisterProperty
+  var lineColor = Color(Color.aquamarine, 0.2)
+
   @RegisterProperty
   lateinit var systemRoot: Node3D
 
@@ -46,7 +51,7 @@ class GenericSystemNode3D : Node3D() {
   lateinit var system: KeplerianSystem
 
   var systemDistanceScaleReduction = 1_000_000_000.0
-  var moonDistanceScaleIncrease = 400.0
+  var moonDistanceScaleIncrease = 800.0
 
   var time: Double = 0.0
   var speed: Int = 1
@@ -79,7 +84,13 @@ class GenericSystemNode3D : Node3D() {
 
       system.nonRootCelestialBodies.forEach { simBody ->
 
-        val planetNode = GodotStatic.templatePlanet.instantiate() as Node3D
+        val planetNode = when (simBody.data.type) {
+          CelestialBodyType.PLANET -> GodotStatic.templatePlanet.instantiate() as Node3D
+          CelestialBodyType.MOON -> GodotStatic.templateMoon.instantiate() as Node3D
+          CelestialBodyType.STAR -> GodotStatic.templateStar.instantiate() as Node3D
+          else -> GodotStatic.templateMoon.instantiate() as Node3D
+        }
+
         planetNode.name = simBody.name.asStringName()
 
         var parentNode = systemRoot
@@ -150,7 +161,7 @@ class GenericSystemNode3D : Node3D() {
 
       val body = system.nonRootCelestialBodies[bodyIndex]
 
-      val parentNode = systemBodies.get(body.parent.name)
+//      val parentNode = systemBodies.get(body.parent.name)
 
       val lineExisted = lineCache.containsKey(body.name)
 
@@ -189,14 +200,37 @@ class GenericSystemNode3D : Node3D() {
 
         }
 
+        fun getParentPositions(body: DefaultCelestialBodyHolder, aggregator: MutableList<Vector3> = mutableListOf()): List<Vector3> {
+
+          if (body.parent is DefaultCelestialBodyHolder) {
+            systemBodies.get(body.parent.name)?.let { parentNode ->
+              aggregator.add(parentNode.position)
+              getParentPositions(body.parent as DefaultCelestialBodyHolder, aggregator)
+            }
+          }
+
+          return aggregator
+        }
+
+        // flip y/z for Godot
         val systemRelativePosition = when {
+          // if the parent, use as-is
           body.parent === system.rootBody -> Vector3(scaledParentRelativePosition.x, scaledParentRelativePosition.z, scaledParentRelativePosition.y)
-          else -> parentNode!!.position + Vector3(scaledParentRelativePosition.x, scaledParentRelativePosition.z, scaledParentRelativePosition.y)
+          else -> {
+            // need add to all the parent position vectors
+            var vec = Vector3(scaledParentRelativePosition.x, scaledParentRelativePosition.z, scaledParentRelativePosition.y)
+
+            val parentPositions = getParentPositions(body)
+            parentPositions.forEach {
+              vec += it
+            }
+            vec
+          }
         }
 
         // TODO: benchmark Camera3D vs FakeCamera unprojectPosition perf
-//        val pos2d = camera.unprojectPosition(systemRelativePosition)
-        val pos2d = fakeCamera.unprojectPosition(systemRelativePosition)
+        val pos2d = camera.unprojectPosition(systemRelativePosition)
+//        val pos2d = fakeCamera.unprojectPosition(systemRelativePosition)
 
         vec2s.add(pos2d)
       }
@@ -206,9 +240,11 @@ class GenericSystemNode3D : Node3D() {
       if (!lineExisted) {
         line.width = 3.0f
         line.closed = true
-        line.defaultColor = Color(Color.darkGray, 0.5)
+        line.defaultColor = lineColor
         line.visible = true
         lines.addChild(line)
+      } else {
+        line.defaultColor = lineColor
       }
 
     }
@@ -269,6 +305,9 @@ private fun buildSystem(): KeplerianSystem {
 
 object GodotStatic {
 
+  var templateMoon by godotStatic {
+    ResourceLoader.load("res://template_moon.tscn") as PackedScene
+  }
   var templatePlanet by godotStatic {
     ResourceLoader.load("res://template_planet.tscn") as PackedScene
   }

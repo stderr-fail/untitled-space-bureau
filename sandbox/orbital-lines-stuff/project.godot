@@ -23,6 +23,7 @@ settings/stdout/print_fps=true
 
 window/size/viewport_width=1600
 window/size/viewport_height=1600
+window/vsync/vsync_mode=0
 
 [editor]
 
