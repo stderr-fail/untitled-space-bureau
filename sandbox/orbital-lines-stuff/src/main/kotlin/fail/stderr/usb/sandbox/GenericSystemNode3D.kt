@@ -1,9 +1,11 @@
 package fail.stderr.usb.sandbox
 
-import com.codahale.metrics.ConsoleReporter
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.Timer
 import fail.stderr.usb.data.system.CelestialBodyType
+import fail.stderr.usb.extensions.plus
+import fail.stderr.usb.extensions.toGodot
+import fail.stderr.usb.extensions.toJVM
 import fail.stderr.usb.godot.FakeGodotCamera
 import fail.stderr.usb.metrics.GodotReporter
 import fail.stderr.usb.system.KeplerianSystem
@@ -54,8 +56,11 @@ class GenericSystemNode3D : Node3D() {
 
   lateinit var system: KeplerianSystem
 
+  var fakeCameraInited = false
+  lateinit var fakeCamera: FakeGodotCamera
+
   var systemDistanceScaleReduction = 1_000_000_000.0
-  var moonDistanceScaleIncrease = 800.0
+  var moonDistanceScaleIncrease = 400.0
 
   var time: Double = 0.0
   var speed: Int = 1
@@ -63,6 +68,7 @@ class GenericSystemNode3D : Node3D() {
   lateinit var currentDate: AbsoluteDate
   lateinit var accumulatingDate: AbsoluteDate
   lateinit var initialDate: AbsoluteDate
+
   var accumulatedSeconds: Double = 0.0
 
   var iteration = 0L
@@ -74,16 +80,18 @@ class GenericSystemNode3D : Node3D() {
     .convertDurationsTo(TimeUnit.MILLISECONDS)
     .build()
 
-//  val gdCameraTimer: Timer = registry.timer("gd-camera")
+  //  val gdCameraTimer: Timer = registry.timer("gd-camera")
 //  val fakeCameraTimer: Timer = registry.timer("fake-camera")
-//  val linesJvmDataTimer: Timer = registry.timer("lines-jvm-data")
-  val linesGodotDataTimer: Timer = registry.timer("lines-godot-data")
+  val linesJvmDataTimer: Timer = registry.timer("lines-jvm-data")
+//  val linesGodotDataTimer: Timer = registry.timer("lines-godot-data")
 
   @RegisterFunction
   override fun _ready() {
     try {
 
       GD.print("ready5")
+
+//      maybeUpdateFakeCamera()
 
       reporter.start(5L, TimeUnit.SECONDS);
 
@@ -155,13 +163,13 @@ class GenericSystemNode3D : Node3D() {
       time += delta
       renderPlanets(delta)
 
-//      val context1 = linesJvmDataTimer.time()
-//      renderOrbitLinesUsingJvmData(delta)
-//      context1.stop()
+      val context1 = linesJvmDataTimer.time()
+      renderOrbitLinesUsingJvmData(delta)
+      context1.stop()
 
-      val context2 = linesGodotDataTimer.time()
-      renderOrbitLinesUsingGodotData(delta)
-      context2.stop()
+//      val context2 = linesGodotDataTimer.time()
+//      renderOrbitLinesUsingGodotData(delta)
+//      context2.stop()
 
 
     } catch (e: Exception) {
@@ -169,21 +177,124 @@ class GenericSystemNode3D : Node3D() {
     }
   }
 
+
+  fun hasCameraChanged(): Boolean {
+    if (
+      !fakeCameraInited
+      || null == fakeCamera
+      || camera.getCameraProjection() != fakeCamera.cameraProjection
+      || camera.getCameraTransform() != fakeCamera.cameraTransform
+      || camera.globalTransform != fakeCamera.globalTransform
+    ) {
+      fakeCameraInited = true
+      return true
+    }
+    return false
+  }
+
+  fun maybeUpdateFakeCamera() {
+    if (hasCameraChanged()) {
+      fakeCamera = FakeGodotCamera(
+        cameraProjection = camera.getCameraProjection(),
+        cameraTransform = camera.getCameraTransform(),
+        globalTransform = camera.globalTransform,
+        viewportSize = camera.getWindow()!!.size,
+      )
+    }
+  }
+
+  val SEGMENT_COUNT = 128
+
+
+  fun getParentPositions(
+    body: DefaultCelestialBodyHolder,
+    aggregator: MutableList<Vector3D> = mutableListOf()
+  ): List<Vector3D> {
+
+    if (body.parent is DefaultCelestialBodyHolder) {
+      systemBodies.get(body.parent.name)?.let { parentNode ->
+        aggregator.add(parentNode.position.toJVM())
+        getParentPositions(body.parent as DefaultCelestialBodyHolder, aggregator)
+      }
+    }
+
+    return aggregator
+  }
+
+  fun isParentSystemRoot(body: DefaultCelestialBodyHolder): Boolean {
+    return body.parent === system.rootBody
+  }
+
+  var orbitLineCache: MutableMap<String, List<Vector3D>> = mutableMapOf()
+
+  fun buildOrbitLinesForBody(body: DefaultCelestialBodyHolder): List<Vector3D> {
+
+    val unshiftedLines = orbitLineCache.getOrPut(body.name) { buildOrbitLinesForBodyNoShift(body) }
+
+    val shiftedLines = when {
+      body.parent === system.rootBody -> unshiftedLines
+      else -> {
+        val parentPositions = getParentPositions(body)
+
+        unshiftedLines.map { unshiftedPos ->
+          var newVec = unshiftedPos
+          parentPositions.forEach { parentPosition ->
+            newVec += parentPosition
+          }
+          newVec
+        }
+      }
+
+    }
+
+    return shiftedLines
+  }
+
+
+  fun buildOrbitLinesForBodyNoShift(body: DefaultCelestialBodyHolder): List<Vector3D> {
+
+    val vec3s = mutableListOf<Vector3D>()
+
+    val segmentTimeIncrement = floor(body.orbit.keplerianPeriod / SEGMENT_COUNT).toLong()
+
+    for (segmentIndex in 0..<SEGMENT_COUNT) {
+
+      val date = system.refDate.shiftedBy(segmentTimeIncrement * segmentIndex, TimeUnit.SECONDS)
+
+      val parentRelativePosition = body.orbit.getPosition(date, body.parent.frame)
+
+      var scaledParentRelativePosition = Vector3D(
+        parentRelativePosition.x / systemDistanceScaleReduction,
+        parentRelativePosition.y / systemDistanceScaleReduction,
+        parentRelativePosition.z / systemDistanceScaleReduction,
+      )
+
+      // if moon...
+      if (body.data.type == CelestialBodyType.MOON) {
+
+        // scale up moon distance
+        scaledParentRelativePosition = Vector3D(
+          scaledParentRelativePosition.x * moonDistanceScaleIncrease,
+          scaledParentRelativePosition.y * moonDistanceScaleIncrease,
+          scaledParentRelativePosition.z * moonDistanceScaleIncrease,
+        )
+
+      }
+
+      vec3s.add(scaledParentRelativePosition)
+    }
+
+    return vec3s
+  }
+
   fun renderOrbitLinesUsingJvmData(delta: Double) {
 
-    var fakeCamera = FakeGodotCamera(
-      cameraProjection = camera.getCameraProjection(),
-      cameraTransform = camera.getCameraTransform(),
-      globalTransform = camera.globalTransform,
-      viewportSize = camera.getWindow()!!.size,
-    )
-
-    val segmentCount = 256
-    val startDate = system.refDate
+    maybeUpdateFakeCamera()
 
     for (bodyIndex in 0..<system.nonRootCelestialBodies.size) {
 
       val body = system.nonRootCelestialBodies[bodyIndex]
+      val vec3s = buildOrbitLinesForBody(body)
 
       val lineExisted = lineCache.containsKey(body.name)
 
@@ -193,83 +304,9 @@ class GenericSystemNode3D : Node3D() {
         line.clearPoints();
       }
 
-      val vec2s = mutableListOf<Vector2>()
-
-      val segmentTimeIncrement = floor(body.orbit.keplerianPeriod / segmentCount).toLong()
-
-      for (segmentIndex in 0..<segmentCount) {
-
-        val date = startDate.shiftedBy(segmentTimeIncrement * segmentIndex, TimeUnit.SECONDS)
-
-        val parentRelativePosition = body.orbit.getPosition(date, body.parent.frame)
-
-        var scaledParentRelativePosition = Vector3D(
-          parentRelativePosition.x / systemDistanceScaleReduction,
-          parentRelativePosition.y / systemDistanceScaleReduction,
-          parentRelativePosition.z / systemDistanceScaleReduction,
-        )
-
-        // if moon...
-        if (body.data.type == CelestialBodyType.MOON) {
-
-          // scale up moon distance
-          scaledParentRelativePosition = Vector3D(
-            scaledParentRelativePosition.x * moonDistanceScaleIncrease,
-            scaledParentRelativePosition.y * moonDistanceScaleIncrease,
-            scaledParentRelativePosition.z * moonDistanceScaleIncrease,
-          )
-
-        }
-
-        fun getParentPositions(
-          body: DefaultCelestialBodyHolder,
-          aggregator: MutableList<Vector3> = mutableListOf()
-        ): List<Vector3> {
-
-          if (body.parent is DefaultCelestialBodyHolder) {
-            systemBodies.get(body.parent.name)?.let { parentNode ->
-              aggregator.add(parentNode.position)
-              getParentPositions(body.parent as DefaultCelestialBodyHolder, aggregator)
-            }
-          }
-
-          return aggregator
-        }
-
-        // flip y/z for Godot
-        val systemRelativePosition = when {
-          // if the parent, use as-is
-          body.parent === system.rootBody -> Vector3(
-            scaledParentRelativePosition.x,
-            scaledParentRelativePosition.z,
-            scaledParentRelativePosition.y
-          )
-
-          else -> {
-            // need add to all the parent position vectors
-            var vec =
-              Vector3(scaledParentRelativePosition.x, scaledParentRelativePosition.z, scaledParentRelativePosition.y)
-
-            val parentPositions = getParentPositions(body)
-            parentPositions.forEach {
-              vec += it
-            }
-            vec
-          }
-        }
-
-        // TODO: benchmark Camera3D vs FakeCamera unprojectPosition perf
-
-//        val context1 = gdCameraTimer.time()
-//        val pos2d = camera.unprojectPosition(systemRelativePosition)
-//        context1.stop()
-
-//        val context2 = fakeCameraTimer.time()
-        val pos2d = fakeCamera.unprojectPosition(systemRelativePosition)
-//        context2.stop()
-
-        vec2s.add(pos2d)
-      }
+      val vec2s = vec3s
+        .map(Vector3D::toGodot)
+        .map(fakeCamera::unprojectPosition)
 
       vec2s.forEach(line::addPoint)
 
