@@ -1,6 +1,5 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
 val godotKotlinVersion: String by project
+val metricsVersion: String by project
 
 plugins {
     // can't use godotKotlinVersion below because gradle is the biggest pile of excrement ever created
@@ -37,6 +36,9 @@ dependencies {
     implementation("org.orekit:orekit:12.1.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
     implementation("com.utopia-rise:godot-library-debug:${godotKotlinVersion}")
+
+    implementation("io.dropwizard.metrics:metrics-core:${metricsVersion}")
+    implementation("io.dropwizard.metrics:metrics-jvm:${metricsVersion}")
 }
 
 godot {
