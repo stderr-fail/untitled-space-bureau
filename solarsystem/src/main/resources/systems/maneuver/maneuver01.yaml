@@ -1,0 +1,28 @@
+---
+$schema: "https://stderr.fail/schemas/System"
+name: "Maneuver 01"
+rootBody:
+  name: "Star"
+  mu: 1.0e18
+  type: STAR
+  children:
+    - name: "Planet A"
+      mu: 6.0e10
+      type: PLANET
+      initialOrbitalParameters:
+        semiMajorAxis: 6.0e10
+        eccentricity: 0
+        inclination: 0
+        perigreeArgument: 0
+        raan: 0
+        anomaly: 0
+    - name: "Planet B"
+      mu: 4.0e10
+      type: PLANET
+      initialOrbitalParameters:
+        semiMajorAxis: 9.0e10
+        eccentricity: 0
+        inclination: 0
+        perigreeArgument: 0
+        raan: 0
+        anomaly: 3.14159

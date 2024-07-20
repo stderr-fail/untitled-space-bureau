@@ -487,10 +487,11 @@ class GenericSystemNode3D : Node3D() {
 
 private fun buildSystem(): KeplerianSystem {
   val result = SystemDataUtils.fromYAML {
-    Thread.currentThread().contextClassLoader.getResourceAsStream("systems/dwarla/system.yaml")!!
+//    Thread.currentThread().contextClassLoader.getResourceAsStream("systems/dwarla/system.yaml")!!
+    Thread.currentThread().contextClassLoader.getResourceAsStream("systems/maneuver/maneuver01.yaml")!!
   }
 
-  val system = createGenericSystem("Dwarlis", result)
+  val system = createGenericSystem(result.name, result)
   return system
 }
 

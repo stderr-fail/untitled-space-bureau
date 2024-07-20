@@ -32,3 +32,16 @@ Godot project settings > [advanced] > Editor > Run
 
 The **orbital-lines-stuff** sandbox holds PoC code for rendering orbital lines and Godot Camera3D code for 
 moving the camera along with mouse movements
+
+# Name Ideas
+
+BSOD - blob space organization/operations? department/destination/?
+        blob space operations department?
+
+GELO - gelatinous exploration league operations
+
+GASP - Gelatinous Astronauts' Space Program
+
+GOO - Galactic Operations Organization
+
+GLOP - Gelatin Launch and Orbital Program

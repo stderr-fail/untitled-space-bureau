@@ -16,12 +16,12 @@ plugins {
 //    }
 //}
 
-//tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-//    // always run kspKotlin so Godot will detect updates
-//    if (name == "kspKotlin") {
-//        outputs.upToDateWhen { false }
-//    }
-//}
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    // always run kspKotlin so Godot will detect updates
+    if (name == "kspKotlin") {
+        outputs.upToDateWhen { false }
+    }
+}
 
 
 dependencies {
