@@ -40,3 +40,27 @@ rootBody:
         perigreeArgument: 0
         raan: 0
         anomaly: 3.14159
+    - name: "Planet C"
+      mu: 5.0e10
+      type: PLANET
+      equatorialRadius: 1000000
+      initialOrbitalParameters:
+        semiMajorAxis: 12.0e10
+        eccentricity: 0
+        # 3 deg = 0.0523599
+        inclination: 0
+        perigreeArgument: 0
+        raan: 0
+        anomaly: 3.14159
+    - name: "Planet D"
+      mu: 4.0e10
+      type: PLANET
+      equatorialRadius: 300000
+      initialOrbitalParameters:
+        semiMajorAxis: 3.0e10
+        eccentricity: 0
+        # 3 deg = 0.0523599
+        inclination: 0
+        perigreeArgument: 0
+        raan: 0
+        anomaly: 3.14159

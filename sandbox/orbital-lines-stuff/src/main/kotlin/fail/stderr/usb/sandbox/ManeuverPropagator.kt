@@ -2,6 +2,7 @@ package fail.stderr.usb.sandbox
 
 import fail.stderr.usb.system.KeplerianSystem
 import fail.stderr.usb.system.model.DefaultCelestialBodyHolder
+import godot.global.GD
 import org.hipparchus.geometry.euclidean.threed.Vector3D
 import org.hipparchus.ode.events.Action
 import org.orekit.attitudes.LofOffset
@@ -18,6 +19,7 @@ import org.orekit.utils.Constants
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
+
 
 class ManeuverPropagator(val system: KeplerianSystem) {
 
@@ -47,6 +49,9 @@ class ManeuverPropagator(val system: KeplerianSystem) {
 
     propagator.addEventDetector(soiExitDetector)
     propagator.addEventDetector(impulseManeuver)
+    propagator.addEventDetector(buildSOIEnterDetector("Planet B"))
+    propagator.addEventDetector(buildSOIEnterDetector("Planet C"))
+    propagator.addEventDetector(buildSOIEnterDetector("Planet D"))
 
     val positions = mutableListOf<Vector3D>()
 
@@ -96,6 +101,46 @@ class ManeuverPropagator(val system: KeplerianSystem) {
         return@withHandler Action.STOP
       }
     return altitudeDetector
+  }
+
+  val printEvery = 1000
+
+  fun buildSOIEnterDetector(bodyName: String): AltitudeDetector {
+    val planet = system.allCelestialBodies[bodyName]!! as DefaultCelestialBodyHolder
+
+    val planetShape: BodyShape = OneAxisEllipsoid(
+      planet.data.equatorialRadius,
+      Constants.WGS84_EARTH_FLATTENING, // todo, use custom
+      planet.frame
+    )
+
+    return object : AltitudeDetector(
+      DEFAULT_MAXCHECK,
+      DEFAULT_THRESHOLD,
+      planet.soiRadius,
+      planetShape,
+      ) {
+      override fun g(state: SpacecraftState): Double {
+
+        val craftPosition = state.getPVCoordinates(system.refFrame).position
+        val planetPosition = planet.orbit.getPVCoordinates(state.date, system.refFrame).position
+
+        val distance = craftPosition.distance(planetPosition) - planet.soiRadius
+        return distance
+
+      }
+    }
+      .withMaxIter(AltitudeDetector.DEFAULT_MAX_ITER)
+      .withHandler { state, detector, b ->
+
+        val craftPosition = state.getPVCoordinates(system.refFrame).position
+        val planetPosition = planet.orbit.getPVCoordinates(state.date, system.refFrame).position
+
+        val distance = craftPosition.distance(planetPosition) - planet.soiRadius
+
+        GD.print("!!! ENTERED SOI OF ${planet.name} AT ${state.date} with distance ${distance}")
+        return@withHandler Action.CONTINUE
+      }
   }
 
 

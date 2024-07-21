@@ -106,7 +106,7 @@ class GenericSystemNode3D : Node3D() {
 
 //      maybeUpdateFakeCamera()
 
-      reporter.start(10L, TimeUnit.SECONDS);
+//      reporter.start(10L, TimeUnit.SECONDS);
 
 
       system = buildSystem()
