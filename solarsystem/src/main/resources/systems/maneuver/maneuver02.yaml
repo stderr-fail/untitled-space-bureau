@@ -1,0 +1,42 @@
+---
+$schema: "https://stderr.fail/schemas/System"
+name: "Maneuver 02"
+rootBody:
+  name: "Kerbol"
+  mu: 1.1723328e18
+  type: STAR
+  children:
+    - name: "Kerbin"
+      mu: 3.5316e12
+      type: PLANET
+      equatorialRadius: 600000
+      initialOrbitalParameters:
+        semiMajorAxis: 13599840256.0
+        eccentricity: 0
+        inclination: 0
+        perigreeArgument: 0
+        raan: 0
+        anomaly: 3.14
+      children:
+        - name: "S01"
+          mu: 10
+          type: SATELLITE
+          equatorialRadius: 0
+          initialOrbitalParameters:
+            semiMajorAxis: 650000
+            eccentricity: 0
+            inclination: 0
+            perigreeArgument: 0
+            raan: 0
+            anomaly: 0
+    - name: "Duna"
+      mu: 3.0136321e11
+      type: PLANET
+      equatorialRadius: 320000
+      initialOrbitalParameters:
+        semiMajorAxis: 20726155264
+        eccentricity: 0
+        inclination: 0
+        perigreeArgument: 0
+        raan: 0
+        anomaly: 3.14159
