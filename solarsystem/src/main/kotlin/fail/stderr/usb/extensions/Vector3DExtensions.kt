@@ -17,3 +17,9 @@ fun Vector3.toJVM(): Vector3D =
   Vector3D(x, z, y) // flip z/y back tp JVM vector space
 
 operator fun Vector3D.plus(vec: Vector3D) = Vector3D(x + vec.x, y + vec.y, z + vec.z)
+
+operator fun Vector3D.times(vec: Vector3D) = Vector3D(x * vec.x, y * vec.y, z * vec.z)
+operator fun Vector3D.times(scalar: Double) = Vector3D(x * scalar, y * scalar, z * scalar)
+
+operator fun Vector3D.div(vec: Vector3D) = Vector3D(x / vec.x, y / vec.y, z / vec.z)
+operator fun Vector3D.div(scalar: Double) = Vector3D(x / scalar, y / scalar, z / scalar)

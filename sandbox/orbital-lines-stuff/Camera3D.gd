@@ -79,4 +79,36 @@ func update_camera():
 	
 	# must be last, after the global_transform.origin update
 	if rotating:
+		reset_look_at()
+		
+func reset_look_at():
 		look_at(focus_node.global_transform.origin, Vector3.UP)
+
+func set_camera_distance(desired_distance: float):
+	tracked_distance = desired_distance
+	update_camera()
+	
+	#print("set_camera_distance(%s)" % desired_distance)
+	#
+	#var reference_position: Vector3 = focus_node.global_transform.origin
+#
+	## Get the current position of the camera
+	#var camera_position: Vector3 = global_transform.origin
+	#
+	## Calculate the direction vector from the camera to the reference point
+	#var direction_vector: Vector3 = reference_position - camera_position
+	#
+	## Normalize the direction vector
+	#direction_vector = direction_vector.normalized()
+	#
+	## Scale the direction vector by the desired distance
+	#direction_vector *= desired_distance
+	#
+	## Set the new position of the camera
+	#global_transform.origin = reference_position - direction_vector
+	#
+	## Make the camera look at the reference point
+	##camera.look_at(reference_point, Vector3.UP)
+	#
+	#reset_look_at()
+

@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://d1kfe3oelr2c5"]
+[gd_scene load_steps=3 format=3 uid="uid://d1kfe3oelr2c5"]
 
+[ext_resource type="Script" path="res://Zoom.gd" id="1_kv0vc"]
 [ext_resource type="Script" path="res://Speed.gd" id="1_vn84m"]
 
 [node name="UI" type="Control"]
@@ -11,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ColorRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(2.08165e-12, 120)
+custom_minimum_size = Vector2(2.08165e-12, 180)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -33,6 +34,38 @@ theme_override_constants/margin_right = 25
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer"]
 layout_mode = 2
+
+[node name="ZoomContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 60)
+layout_mode = 2
+
+[node name="ZoomLabel" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/ZoomContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 25
+text = "Zoom"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Zoom" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/ZoomContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 25
+text = "200"
+vertical_alignment = 1
+script = ExtResource("1_kv0vc")
+
+[node name="ZoomSlider" type="HSlider" parent="ColorRect/MarginContainer/VBoxContainer/ZoomContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+min_value = 10.0
+max_value = 300.0
+value = 200.0
+ticks_on_borders = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 60)
@@ -62,8 +95,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 min_value = 1.0
-max_value = 1.57248e+07
+max_value = 6.28992e+07
 value = 1.0
+exp_edit = true
 ticks_on_borders = true
 
 [node name="DateContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]
@@ -75,4 +109,5 @@ theme_override_font_sizes/font_size = 25
 text = "Date: 2024-06-25"
 vertical_alignment = 1
 
+[connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/ZoomContainer/ZoomSlider" to="ColorRect/MarginContainer/VBoxContainer/ZoomContainer/Zoom" method="_on_zoom_slider_value_changed"]
 [connection signal="value_changed" from="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/SpeedSlider" to="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/Speed" method="_on_speed_slider_value_changed"]

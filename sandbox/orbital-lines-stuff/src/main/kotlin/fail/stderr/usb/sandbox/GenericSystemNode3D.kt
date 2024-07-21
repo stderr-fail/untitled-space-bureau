@@ -3,9 +3,7 @@ package fail.stderr.usb.sandbox
 import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.Timer
 import fail.stderr.usb.data.system.CelestialBodyType
-import fail.stderr.usb.extensions.plus
-import fail.stderr.usb.extensions.toGodot
-import fail.stderr.usb.extensions.toJVM
+import fail.stderr.usb.extensions.*
 import fail.stderr.usb.godot.FakeGodotCamera
 import fail.stderr.usb.metrics.GodotReporter
 import fail.stderr.usb.system.KeplerianSystem
@@ -42,6 +40,14 @@ class GenericSystemNode3D : Node3D() {
   @RegisterProperty
   var lineColor = Color(Color.aquamarine, 0.2)
 
+  @Export
+  @RegisterProperty
+  var maneuverLineColor = Color(Color.yellow, 0.3)
+
+  @RegisterProperty
+  @Export
+  var maneuverPoints: PackedVector2Array = PackedVector2Array()
+
   @RegisterProperty
   lateinit var systemRoot: Node3D
 
@@ -55,15 +61,18 @@ class GenericSystemNode3D : Node3D() {
   lateinit var dateLabel: Label
 
   lateinit var system: KeplerianSystem
+  lateinit var maneuverPropagator: ManeuverPropagator
 
   var fakeCameraInited = false
   lateinit var fakeCamera: FakeGodotCamera
 
   var systemDistanceScaleReduction = 1_000_000_000.0
   var moonDistanceScaleIncrease = 400.0
+  var satelliteDistanceScaleIncrease = 10000.0
 
   var time: Double = 0.0
   var speed: Int = 1
+  var maneuver: ManeuverData = ManeuverData(Vector3D.ZERO, 100.0)
 
   lateinit var currentDate: AbsoluteDate
   lateinit var accumulatingDate: AbsoluteDate
@@ -74,6 +83,8 @@ class GenericSystemNode3D : Node3D() {
   var iteration = 0L
 
   val registry = MetricRegistry()
+
+  var maneuverPositions = emptyList<Vector3D>()
 
   val reporter = GodotReporter.forRegistry(registry)
     .convertRatesTo(TimeUnit.SECONDS)
@@ -91,12 +102,15 @@ class GenericSystemNode3D : Node3D() {
 
       GD.print("ready5")
 
+      maneuverPoints.resize(0)
+
 //      maybeUpdateFakeCamera()
 
-      reporter.start(5L, TimeUnit.SECONDS);
+      reporter.start(10L, TimeUnit.SECONDS);
 
 
       system = buildSystem()
+      maneuverPropagator = ManeuverPropagator(system)
 
       systemRoot = GodotStatic.templateStar.instantiate() as Node3D
       systemRoot.name = system.rootBody.name.asStringName()
@@ -112,6 +126,7 @@ class GenericSystemNode3D : Node3D() {
         val planetNode = when (simBody.data.type) {
           CelestialBodyType.PLANET -> GodotStatic.templatePlanet.instantiate() as Node3D
           CelestialBodyType.MOON -> GodotStatic.templateMoon.instantiate() as Node3D
+          CelestialBodyType.SATELLITE -> GodotStatic.templateSatellite.instantiate() as Node3D
           CelestialBodyType.STAR -> GodotStatic.templateStar.instantiate() as Node3D
           else -> GodotStatic.templateMoon.instantiate() as Node3D
         }
@@ -158,6 +173,26 @@ class GenericSystemNode3D : Node3D() {
   }
 
   @RegisterFunction
+  fun maneuverChanged(vec: Vector3, isp: Float) {
+    try {
+
+      maneuver = ManeuverData(vec = vec.toJVM(), isp = isp.toDouble())
+      GD.print("got new maneuver ${maneuver}")
+
+
+    } catch (e: Exception) {
+      GD.printErr(e)
+    }
+  }
+
+  fun regenManeuverPositions() {
+    val newPositions = maneuverPropagator.propagate(maneuver, currentDate, "S01")
+
+    maneuverPositions = newPositions
+
+  }
+
+  @RegisterFunction
   override fun _process(delta: Double) {
     try {
       time += delta
@@ -166,6 +201,8 @@ class GenericSystemNode3D : Node3D() {
       val context1 = linesJvmDataTimer.time()
       renderOrbitLinesUsingJvmData(delta)
       context1.stop()
+
+      renderManeuverLines(delta)
 
 //      val context2 = linesGodotDataTimer.time()
 //      renderOrbitLinesUsingGodotData(delta)
@@ -177,8 +214,9 @@ class GenericSystemNode3D : Node3D() {
     }
   }
 
+  fun hasCameraChanged(): Boolean = true
 
-  fun hasCameraChanged(): Boolean {
+  fun hasCameraChangedFIXME(): Boolean {
     if (
       !fakeCameraInited
       || null == fakeCamera
@@ -281,6 +319,18 @@ class GenericSystemNode3D : Node3D() {
 
       }
 
+      // if satellite...
+      if (body.data.type == CelestialBodyType.SATELLITE) {
+
+        // scale up moon distance
+        scaledParentRelativePosition = Vector3D(
+          scaledParentRelativePosition.x * satelliteDistanceScaleIncrease,
+          scaledParentRelativePosition.y * satelliteDistanceScaleIncrease,
+          scaledParentRelativePosition.z * satelliteDistanceScaleIncrease,
+        )
+
+      }
+
       vec3s.add(scaledParentRelativePosition)
     }
 
@@ -321,6 +371,73 @@ class GenericSystemNode3D : Node3D() {
       }
 
     }
+
+  }
+
+  fun renderManeuverLines(delta: Double) {
+
+    regenManeuverPositions()
+
+
+//    val bodyName = "S01man"
+
+//    val lineExisted = lineCache.containsKey(bodyName)
+
+//    val line = lineCache.getOrPut(bodyName) { Line2D() }
+
+//    if (lineExisted) {
+//      lines.removeChild(line)
+//      line.clearPoints()
+//      lines.addChild(line)
+//    }
+
+    val satellite = system.allCelestialBodies["S01"]!! as DefaultCelestialBodyHolder
+
+    val scaled = maneuverPositions.map { it / systemDistanceScaleReduction * satelliteDistanceScaleIncrease }
+
+    val shiftedVectors = when {
+      satellite.parent === system.rootBody -> scaled
+      else -> {
+        val parentPositions = getParentPositions(satellite)
+
+        scaled.map { unshiftedPos ->
+          var newVec = unshiftedPos
+          parentPositions.forEach { parentPosition ->
+            newVec += parentPosition
+          }
+          newVec
+        }
+      }
+
+    }
+
+    if (maneuverPoints.size != shiftedVectors.size) {
+      maneuverPoints.resize(shiftedVectors.size)
+    }
+
+    for (i in shiftedVectors.indices) {
+      val vec = shiftedVectors[i]
+      maneuverPoints[i] = fakeCamera.unprojectPosition(vec.toGodot())
+
+    }
+
+//    val vec2s = shiftedVectors
+//      .map(Vector3D::toGodot)
+//      .map(fakeCamera::unprojectPosition)
+
+//    vec2s.forEach(line::addPoint)
+
+//    val a = PackedVector2Array()
+
+//    if (!lineExisted) {
+//      line.width = 3.0f
+//      line.closed = false
+//      line.defaultColor = maneuverLineColor
+//      line.visible = true
+//      lines.addChild(line)
+//    } else {
+//      line.defaultColor = maneuverLineColor
+//    }
 
   }
 
@@ -372,6 +489,18 @@ class GenericSystemNode3D : Node3D() {
             scaledParentRelativePosition.x * moonDistanceScaleIncrease,
             scaledParentRelativePosition.y * moonDistanceScaleIncrease,
             scaledParentRelativePosition.z * moonDistanceScaleIncrease,
+          )
+
+        }
+
+        // if moon...
+        if (body.data.type == CelestialBodyType.SATELLITE) {
+
+          // scale up moon distance
+          scaledParentRelativePosition = Vector3(
+            scaledParentRelativePosition.x * satelliteDistanceScaleIncrease,
+            scaledParentRelativePosition.y * satelliteDistanceScaleIncrease,
+            scaledParentRelativePosition.z * satelliteDistanceScaleIncrease,
           )
 
         }
@@ -470,7 +599,12 @@ class GenericSystemNode3D : Node3D() {
 
       if (simBody.parent !== system.rootBody) {
         // is a moon
-        scaledVec *= moonDistanceScaleIncrease
+        when (simBody.data.type) {
+          CelestialBodyType.MOON -> scaledVec *= moonDistanceScaleIncrease
+          CelestialBodyType.SATELLITE -> scaledVec *= satelliteDistanceScaleIncrease
+          else -> {}
+        }
+
       }
 
       val bodyNode = systemBodies.get(simBody.name)!!
@@ -497,6 +631,9 @@ private fun buildSystem(): KeplerianSystem {
 
 object GodotStatic {
 
+  var templateSatellite by godotStatic {
+    ResourceLoader.load("res://template_satellite.tscn") as PackedScene
+  }
   var templateMoon by godotStatic {
     ResourceLoader.load("res://template_moon.tscn") as PackedScene
   }

@@ -7,6 +7,7 @@
   "required": [
     "name",
     "mu",
+    "equatorialRadius",
     "type",
     "initialOrbitalParameters",
   ],
@@ -18,6 +19,10 @@
     "mu": {
       "type": "number",
       "description": "The bodies gravitational constant",
+    },
+    "equatorialRadius": {
+      "type": "number",
+      "description": "The bodies equatorial radius",
     },
     "type": {
       "type": "string",

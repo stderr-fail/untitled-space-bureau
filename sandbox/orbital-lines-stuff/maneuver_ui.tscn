@@ -1,0 +1,84 @@
+[gd_scene load_steps=2 format=3 uid="uid://tjj17exnlxgk"]
+
+[ext_resource type="Script" path="res://maneuver_ui_logic.gd" id="1_1unya"]
+
+[node name="Control" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+script = ExtResource("1_1unya")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+mouse_filter = 2
+
+[node name="description" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "maneuver"
+horizontal_alignment = 1
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+mouse_filter = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="xLabel" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "x"
+
+[node name="xTextField" type="LineEdit" parent="VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(125, 2.08165e-12)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "0"
+
+[node name="yLabel" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "y"
+
+[node name="yTextField" type="LineEdit" parent="VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(125, 2.08165e-12)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "0"
+
+[node name="zLabel" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "z"
+
+[node name="zTextField" type="LineEdit" parent="VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(125, 2.08165e-12)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "0"
+
+[node name="ispLabel" type="Label" parent="VBoxContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "isp"
+
+[node name="ispTextField" type="LineEdit" parent="VBoxContainer/GridContainer"]
+custom_minimum_size = Vector2(125, 2.08165e-12)
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+text = "100"
+
+[connection signal="text_changed" from="VBoxContainer/GridContainer/xTextField" to="." method="_on_x_text_field_text_changed"]
+[connection signal="text_changed" from="VBoxContainer/GridContainer/yTextField" to="." method="_on_y_text_field_text_changed"]
+[connection signal="text_changed" from="VBoxContainer/GridContainer/zTextField" to="." method="_on_z_text_field_text_changed"]
+[connection signal="text_changed" from="VBoxContainer/GridContainer/ispTextField" to="." method="_on_isp_text_field_text_changed"]

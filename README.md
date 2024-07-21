@@ -35,6 +35,13 @@ moving the camera along with mouse movements
 
 # Name Ideas
 
+Blobbernauts
+Blobonauts
+
+BSA - Blobonaut Space Agency
+BASA - Blobonaut Astral Space Agency
+BASA - Blobonaut Aeronautics Space Agency
+
 BSOD - blob space organization/operations? department/destination/?
         blob space operations department?
 

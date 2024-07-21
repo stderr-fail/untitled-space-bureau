@@ -7,20 +7,34 @@ rootBody:
   type: STAR
   children:
     - name: "Planet A"
-      mu: 6.0e10
+      mu: 4.0e10
       type: PLANET
+      equatorialRadius: 500000
       initialOrbitalParameters:
-        semiMajorAxis: 6.0e10
+        semiMajorAxis: 9.0e10
         eccentricity: 0
         inclination: 0
         perigreeArgument: 0
         raan: 0
         anomaly: 0
+      children:
+        - name: "S01"
+          mu: 10
+          type: SATELLITE
+          equatorialRadius: 0
+          initialOrbitalParameters:
+            semiMajorAxis: 650000
+            eccentricity: 0
+            inclination: 0
+            perigreeArgument: 0
+            raan: 0
+            anomaly: 0
     - name: "Planet B"
-      mu: 4.0e10
+      mu: 6.0e10
       type: PLANET
+      equatorialRadius: 600000
       initialOrbitalParameters:
-        semiMajorAxis: 9.0e10
+        semiMajorAxis: 6.0e10
         eccentricity: 0
         inclination: 0
         perigreeArgument: 0

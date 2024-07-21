@@ -4,6 +4,7 @@ package fail.stderr.usb.data.system
 data class CelestialBodyData(
   val name: String,
   val mu: Double,
+  val equatorialRadius: Double,
   val type: CelestialBodyType,
   val initialOrbitalParameters: KeplerianOrbitalParametersData,
   val children: Array<CelestialBodyData>? = null,

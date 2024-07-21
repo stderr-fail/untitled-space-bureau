@@ -10,20 +10,21 @@ import org.orekit.forces.maneuvers.ImpulseManeuver
 import org.orekit.frames.LOFType
 import org.orekit.orbits.KeplerianOrbit
 import org.orekit.orbits.PositionAngleType
-import org.orekit.propagation.SpacecraftState
 import org.orekit.propagation.analytical.KeplerianPropagator
 import org.orekit.propagation.events.AltitudeDetector
 import org.orekit.propagation.events.DateDetector
 import org.orekit.propagation.sampling.OrekitStepInterpolator
-import org.orekit.time.AbsoluteDate
 import org.orekit.utils.Constants
-import java.time.Instant
 import java.util.concurrent.TimeUnit
-import kotlin.math.floor
 
 
 class ManeuverTest {
 
+
+  @Test
+  fun testManeuver2() {
+
+  }
 
   @Test
   fun testManeuver() {
