@@ -11,8 +11,23 @@ varying vec3 debug_value;
 
 void vertex() {
 
+/*
+	// THIS IS HOW TO BILLBOARD THE VECTOR
+    mat4 modified_model_view = VIEW_MATRIX * mat4(
+        INV_VIEW_MATRIX[0],
+        INV_VIEW_MATRIX[1],
+        INV_VIEW_MATRIX[2],
+        MODEL_MATRIX[3]
+    );
+    MODELVIEW_MATRIX = modified_model_view;
+*/
+
+// TODO: MODIFY THE VERTEX TO POINT ALONG THE PATH OF THE START/END POINTS
+
     //debug_value=vec3(1.0, 2.0, 3.0);
     //vertex_pos = VERTEX;
+
+	//VERTEX.z += 15.0;
 //
     //// Get the model space position
     //vec3 model_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
@@ -36,6 +51,7 @@ void vertex() {
 void fragment() {
     //ALBEDO = vec3(UV, 0.0);
 	ALBEDO = vec3(0.0, 1.0, 0.0);
+	ALPHA = 0.05;
 	//return;
 
 	//debug_value=vec3(UV, 0.0);
@@ -58,4 +74,3 @@ void fragment() {
     //ALPHA = alpha * line_color.a;
 
 }
-

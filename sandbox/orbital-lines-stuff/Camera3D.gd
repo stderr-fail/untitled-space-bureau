@@ -17,7 +17,7 @@ var tracked_direction: Vector3
 var focus_node: Node3D
 
 func _ready():
-	followNode("Star", true)
+	followNode("Kerbol", true)
 
 func _process(_delta):
 	update_labels()

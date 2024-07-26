@@ -6,5 +6,5 @@ shading_mode = 0
 [node name="Root" type="Node3D"]
 
 [node name="Sphere" type="CSGSphere3D" parent="."]
-radius = 2.0
+radius = 100.0
 material = SubResource("StandardMaterial3D_0n73m")

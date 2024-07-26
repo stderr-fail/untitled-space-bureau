@@ -38,6 +38,10 @@ class GenericSystemNode3D : Node3D() {
 
   @Export
   @RegisterProperty
+  lateinit var planetBoxes: Control
+
+  @Export
+  @RegisterProperty
   var lineColor = Color(Color.aquamarine, 0.2)
 
   @Export
@@ -66,9 +70,13 @@ class GenericSystemNode3D : Node3D() {
   var fakeCameraInited = false
   lateinit var fakeCamera: FakeGodotCamera
 
-  var systemDistanceScaleReduction = 1_000_000_000.0
-  var moonDistanceScaleIncrease = 400.0
-  var satelliteDistanceScaleIncrease = 10000.0
+//  var systemDistanceScaleReduction = 1_000_000_000.0
+//  var moonDistanceScaleIncrease = 400.0
+//  var satelliteDistanceScaleIncrease = 10000.0
+
+  var systemDistanceScaleReduction = 1.0
+  var moonDistanceScaleIncrease = 1.0
+  var satelliteDistanceScaleIncrease = 1.0
 
   var time: Double = 0.0
   var speed: Int = 1
@@ -136,12 +144,12 @@ class GenericSystemNode3D : Node3D() {
         var parentNode = systemRoot
 
         if (simBody.parent !== system.rootBody) {
-          // is a moon, lookup parent node
+          // is a moon or satellite, lookup parent node
           parentNode = systemBodies.get(simBody.parent.name)!!
 
           // change radius of moon to be smaller
-          val sphere = planetNode.getNode("Sphere".asNodePath()) as CSGSphere3D
-          sphere.radius = 1.0f
+//          val sphere = planetNode.getNode("Sphere".asNodePath()) as CSGSphere3D
+//          sphere.radius = 1.0f
         }
 
         systemBodies.put(simBody.name, planetNode)
@@ -196,6 +204,9 @@ class GenericSystemNode3D : Node3D() {
   override fun _process(delta: Double) {
     try {
       time += delta
+
+      maybeUpdateFakeCamera()
+
       renderPlanets(delta)
 
       val context1 = linesJvmDataTimer.time()
@@ -214,9 +225,9 @@ class GenericSystemNode3D : Node3D() {
     }
   }
 
-  fun hasCameraChanged(): Boolean = true
+//  fun hasCameraChanged(): Boolean = true
 
-  fun hasCameraChangedFIXME(): Boolean {
+  fun hasCameraChanged(): Boolean {
     if (
       !fakeCameraInited
       || null == fakeCamera
@@ -339,7 +350,7 @@ class GenericSystemNode3D : Node3D() {
 
   fun renderOrbitLinesUsingJvmData(delta: Double) {
 
-    maybeUpdateFakeCamera()
+//    maybeUpdateFakeCamera()
 
     for (bodyIndex in 0..<system.nonRootCelestialBodies.size) {
 
@@ -391,25 +402,28 @@ class GenericSystemNode3D : Node3D() {
 //      lines.addChild(line)
 //    }
 
-    val satellite = system.allCelestialBodies["S01"]!! as DefaultCelestialBodyHolder
+//    val satellite = system.allCelestialBodies["S01"]!! as DefaultCelestialBodyHolder
 
     val scaled = maneuverPositions.map { it / systemDistanceScaleReduction * satelliteDistanceScaleIncrease }
 
-    val shiftedVectors = when {
-      satellite.parent === system.rootBody -> scaled
-      else -> {
-        val parentPositions = getParentPositions(satellite)
+    // already in system coordinates
+    val shiftedVectors = scaled
 
-        scaled.map { unshiftedPos ->
-          var newVec = unshiftedPos
-          parentPositions.forEach { parentPosition ->
-            newVec += parentPosition
-          }
-          newVec
-        }
-      }
-
-    }
+//    val shiftedVectors = when {
+//      satellite.parent === system.rootBody -> scaled
+//      else -> {
+//        val parentPositions = getParentPositions(satellite)
+//
+//        scaled.map { unshiftedPos ->
+//          var newVec = unshiftedPos
+//          parentPositions.forEach { parentPosition ->
+//            newVec += parentPosition
+//          }
+//          newVec
+//        }
+//      }
+//
+//    }
 
     if (maneuverPoints.size != shiftedVectors.size) {
       maneuverPoints.resize(shiftedVectors.size)
@@ -417,7 +431,7 @@ class GenericSystemNode3D : Node3D() {
 
     for (i in shiftedVectors.indices) {
       val vec = shiftedVectors[i]
-      maneuverPoints[i] = fakeCamera.unprojectPosition(vec.toGodot())
+      maneuverPoints[i] = fakeCamera.unprojectPosition(vec.toGodot()) * Vector2(-1, 1)
 
     }
 
@@ -610,6 +624,55 @@ class GenericSystemNode3D : Node3D() {
       val bodyNode = systemBodies.get(simBody.name)!!
 
       bodyNode.position = scaledVec
+
+      //
+      // START: render boxes
+      //
+
+      if (simBody.data.type === CelestialBodyType.PLANET || simBody.data.type === CelestialBodyType.SATELLITE) {
+        val systemPV = simBody.orbit.getPosition(currentDate, system.refFrame)
+
+        val body2d = fakeCamera.unprojectPosition(systemPV.toGodot())
+
+        val lineName = "${bodyNode.name}Box"
+
+        val lineExisted = lineCache.containsKey(lineName)
+
+        val line = lineCache.getOrPut(lineName) {
+          val l = Line2D()
+          l.width = 4.0f
+          l.closed = false
+          l.defaultColor = when (simBody.data.type) {
+            CelestialBodyType.PLANET -> Color(Color.lightSkyBlue, 0.25)
+            CelestialBodyType.SATELLITE -> Color(Color.yellow, 0.25)
+            else -> Color(Color.red, 0.25)
+          }
+          l.visible = true
+          planetBoxes.addChild(l)
+          l
+        }
+
+        if (lineExisted) {
+          line.clearPoints();
+        }
+
+        val point1 = body2d + Vector2(10, 10)
+        val point2 = point1 - Vector2(20, 0)
+        val point3 = point2 - Vector2(0, 20)
+        val point4 = point3 + Vector2(20, 0)
+        val point5 = point4 + Vector2(0, 20)
+
+        line.addPoint(point1)
+        line.addPoint(point2)
+        line.addPoint(point3)
+        line.addPoint(point4)
+        line.addPoint(point5)
+      }
+
+      //
+      // END: render boxes
+      //
+
       if (iteration % 1000 === 0L) {
 //        GD.print("moving1 ${simBody.name} to ${scaledVec} scaledVec.d=${scaledVec.length()}")
       }
@@ -622,7 +685,8 @@ class GenericSystemNode3D : Node3D() {
 private fun buildSystem(): KeplerianSystem {
   val result = SystemDataUtils.fromYAML {
 //    Thread.currentThread().contextClassLoader.getResourceAsStream("systems/dwarla/system.yaml")!!
-    Thread.currentThread().contextClassLoader.getResourceAsStream("systems/maneuver/maneuver01.yaml")!!
+//    Thread.currentThread().contextClassLoader.getResourceAsStream("systems/maneuver/maneuver01.yaml")!!
+    Thread.currentThread().contextClassLoader.getResourceAsStream("systems/maneuver/maneuver02.yaml")!!
   }
 
   val system = createGenericSystem(result.name, result)

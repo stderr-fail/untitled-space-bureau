@@ -62,9 +62,10 @@ script = ExtResource("1_kv0vc")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-min_value = 10.0
-max_value = 300.0
-value = 200.0
+min_value = 1e+06
+max_value = 4.07262e+10
+value = 4.01262e+10
+exp_edit = true
 ticks_on_borders = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer"]

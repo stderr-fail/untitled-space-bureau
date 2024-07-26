@@ -11,7 +11,7 @@ rootBody:
       type: PLANET
       equatorialRadius: 600000
       initialOrbitalParameters:
-        semiMajorAxis: 13599840256.0
+        semiMajorAxis: 13599840256
         eccentricity: 0
         inclination: 0
         perigreeArgument: 0
@@ -23,7 +23,7 @@ rootBody:
           type: SATELLITE
           equatorialRadius: 0
           initialOrbitalParameters:
-            semiMajorAxis: 650000
+            semiMajorAxis: 80000
             eccentricity: 0
             inclination: 0
             perigreeArgument: 0
@@ -35,8 +35,11 @@ rootBody:
       equatorialRadius: 320000
       initialOrbitalParameters:
         semiMajorAxis: 20726155264
+#        eccentricity: 0.051
         eccentricity: 0
+#        inclination: 0.001047198
         inclination: 0
         perigreeArgument: 0
+#        raan: 2.3649211
         raan: 0
-        anomaly: 3.14159
+        anomaly: 3.14

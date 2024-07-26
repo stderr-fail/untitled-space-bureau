@@ -8,5 +8,5 @@ emission = Color(0.866684, 0.844463, 0.402971, 1)
 [node name="Root" type="Node3D"]
 
 [node name="Sphere" type="CSGSphere3D" parent="."]
-radius = 4.0
+radius = 100.0
 material = SubResource("StandardMaterial3D_e6w28")
