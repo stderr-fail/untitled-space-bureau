@@ -33,7 +33,7 @@ func setup_material():
 
 	# Set default uniform values
 	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.5))
-	line_material.set_shader_parameter("line_thickness", 5.0)
+	line_material.set_shader_parameter("line_thickness", 50.0)
 
 
 
@@ -41,10 +41,7 @@ func setup_multi_mesh():
 	multi_mesh = MultiMesh.new()
 	multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
 	multi_mesh.mesh = QuadMesh.new()
-	multi_mesh.mesh.size = Vector2(1, 6)
-
-	var x = PlaneMesh.new()
-	x
+	multi_mesh.mesh.size = Vector2(1, 1)
 
 	mesh_instance = MultiMeshInstance3D.new()
 	mesh_instance.multimesh = multi_mesh
@@ -90,5 +87,5 @@ func set_line_segments(segments: Array):
 		#tf = tf.scaled(Vector3(1, 1, 1))
 		tf = tf.scaled_local(Vector3(length, 1, 1))
 		
-		print("added transform %s" % tf)
+		#print("added transform %s" % tf)
 		multi_mesh.set_instance_transform(i, tf)
