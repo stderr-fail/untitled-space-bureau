@@ -1,85 +1,94 @@
 shader_type spatial;
+
+//render_mode unshaded;
+
 render_mode unshaded, depth_draw_opaque, cull_disabled;
 
+//render_mode unshaded, depth_test_disabled;
 
-uniform vec4 line_color : source_color = vec4(1.0);
-uniform float line_thickness : hint_range(0, 100) = 5.0;
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+uniform float line_thickness : hint_range(1, 10) = 5.0;
+uniform vec4 line_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 
+varying vec2 line_uv;
+/*
+starting our shader over from scratch,
 
-//void vertex() {
-//
-	//// Convert the vertex position to view space
-	//vec4 view_pos = VIEW_MATRIX * MODEL_MATRIX * vec4(VERTEX, 1.0);
-//
-	//// Calculate the distance from the camera
-	//float dist = -view_pos.z;
-//
-	//// Scale the y-component (thickness) based on distance
-	//VERTEX.y *= dist;
-//
-	//// Apply the line thickness
-	////VERTEX.y *= line_thickness * 0.01; // Divide by 100 to make the range more manageable
-	//VERTEX.y *= 10.0 * 0.01; // Divide by 100 to make the range more manageable
-//
-//}
+For a Godot 4.3 shader which operates on..
 
-//void vertex() {
-    //// Convert the vertex position to view space
-    //vec4 view_pos = VIEW_MATRIX * MODEL_MATRIX * vec4(VERTEX, 1.0);
-//
-    //// Calculate the distance from the camera
-    //float dist = -view_pos.z;
-//
-    //// Scale the y-component (thickness) to maintain constant screen-space size
-    //VERTEX.y *= dist / PROJECTION_MATRIX[1][1];
-	////VERTEX.y *= dist;
-//
-    //// Apply the line thickness
-    //VERTEX.y *= line_thickness * 0.01; // Divide by 100 to make the range more manageable
-//
-//}
+the vertex() function is being run on the 4 vertices of a QuadMesh that is part of a MeshInstance3D that contains an array of Transform3D's to arrange the QuadMesh instances to represent a elliptical orbital path.
 
+assume the following:
+
+- the shader has a float uniform "line_thickness" which represents the exact pixel height of our final screen space lines
+- the input QuadMesh instances always have a unit height on the y axis of 1
+
+give me vertex() function code which will:
+
+1. create a variable "screen_space" which holds the screen space coordinates of the vertex, give me code that derives this value correctly
+
+2. create a variable "pixel_height" which uses the VIEWPORT_SIZE built-in (which is the viewport size in pixels)
+
+3. create a series of variables with the following logic which will figure out the height in pixels of a unit of 1 in local space
+
+    // Project a point 1 unit above in world space to screen space
+    vec4 top_point = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(0.0, 1.0, 0.0, 1.0);
+    vec4 bottom_point = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0);
+
+    vec2 top_screen = (top_point.xy / top_point.w + 1.0) * 0.5 * VIEWPORT_SIZE;
+    vec2 bottom_screen = (bottom_point.xy / bottom_point.w + 1.0) * 0.5 * VIEWPORT_SIZE;
+
+    float height_pixels_per_unit = distance(top_screen, bottom_screen);
+
+4.  given the previous variables, this should be enough information to determine how tall the mesh should be in model space to represent the exact line_thickness in pixels in screen space,
+    I'm thinking we can use the vertex UV coordinates of 0,0 (bottom left), 0,1 (top left), 1,1 (top right) and 1,0 (bottom right) to determine which
+    corner of the QuadMesh the current vertex is.  Knowing all the previous information, we can shift each corner up or down on the y axis in model space
+    and then convert that to clip space and set the POSITION out variable to achieve our final screen space lines of exact pixel height defined by line_thickness uniform
+
+*/
+
+/*
+the vertex() function is being run on the 4 vertices of a QuadMesh that is part of a
+MeshInstance3D that contains an array of Transform3D's to arrange the QuadMesh instances
+to represent a elliptical orbital path.
+*/
 void vertex() {
-	// Convert the vertex position to clip space
-	vec4 clip_pos = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX, 1.0);
-
-	// Get the viewport size
-	vec2 screen_size = vec2(textureSize(SCREEN_TEXTURE, 0));
-
-	// Calculate the clip space height of one pixel
-	float clip_pixel_height = 2.0 / screen_size.y;
-
-	// Adjust the y-component to achieve exact pixel height
-	float y_sign = sign(VERTEX.y);
-	clip_pos.y = clip_pos.y + y_sign * (line_thickness * 0.5 * clip_pixel_height);
-
-	// Convert back to world space
-	vec4 world_pos = INV_PROJECTION_MATRIX * clip_pos;
 
 
-	//VERTEX = world_pos.xyz / world_pos.w;
+    // 1. Create screen_space variable
+    vec4 clip_pos = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(VERTEX, 1.0);
+    vec3 ndc = clip_pos.xyz / clip_pos.w;
+    vec2 screen_space = (ndc.xy + 1.0) * 0.5 * VIEWPORT_SIZE;
 
-	VERTEX.y = (world_pos.xyz / world_pos.w).y;
+    // 2. Create pixel_height variable
+    vec2 pixel_height = VIEWPORT_SIZE;
 
+    // 3. Calculate height_pixels_per_unit
+    vec4 top_point = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(0.0, 1.0, 0.0, 1.0);
+    vec4 bottom_point = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0);
+
+    vec2 top_screen = (top_point.xy / top_point.w + 1.0) * 0.5 * VIEWPORT_SIZE;
+    vec2 bottom_screen = (bottom_point.xy / bottom_point.w + 1.0) * 0.5 * VIEWPORT_SIZE;
+
+    float height_pixels_per_unit = distance(top_screen, bottom_screen);
+
+    // 4. Adjust vertex position based on desired line thickness
+    float desired_model_height = line_thickness / height_pixels_per_unit;
+    float half_height = desired_model_height * 0.5;
+
+    // Adjust Y position based on UV
+    float y_offset = (UV.y - 0.5) * desired_model_height;
+    vec3 adjusted_vertex = VERTEX;
+    adjusted_vertex.y = y_offset;
+
+    // Transform the adjusted vertex to clip space
+    vec4 final_position = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(adjusted_vertex, 1.0);
+    POSITION = final_position;
 }
-
 
 void fragment() {
 
-    //ALBEDO = vec3(UV, 0.0);
-	//ALBEDO = vec3(0.0, 1.0, 0.0);
-	//ALPHA = 0.65;
-
-	// Calculate distance from the center of the quad
-	//vec2 center_dist = abs(UV - 0.5) * 2.0;
-	//float dist = max(center_dist.x, center_dist.y);
-
-
-
-	ALBEDO = line_color.rgb;
-	ALPHA = line_color.a;
-
-
+    // Set final color and alpha
+    ALBEDO = line_color.rgb;
+	  ALPHA = line_color.a;
 
 }

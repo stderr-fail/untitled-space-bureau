@@ -29,13 +29,12 @@ buffer = PackedFloat32Array(7.84727e-44, 8.68805e-44, 7.9874e-44, 7.84727e-44, 8
 environment = SubResource("Environment_0ob4v")
 
 [node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("focus_node")]
-transform = Transform3D(1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 15, 50)
+transform = Transform3D(1, 0, 0, 0, 0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 0, 40)
 script = ExtResource("1_hf8fu")
 focus_node = NodePath("../CSGBox3D")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 material_override = SubResource("StandardMaterial3D_01n1a")
-size = Vector3(6, 6, 6)
 
 [node name="MultiMeshInstance" type="MultiMeshInstance3D" parent="."]
 material_override = SubResource("ShaderMaterial_os2rh")
