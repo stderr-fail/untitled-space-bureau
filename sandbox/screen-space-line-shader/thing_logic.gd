@@ -12,7 +12,7 @@ func _ready():
 	setup_material()
 	setup_multi_mesh()
 
-	create_orbital_path(Vector3.ZERO, 20.0, 20.0, 16)
+	create_orbital_path(Vector3.ZERO, 20.0, 20.0, 64)
 	#create_orbital_path(Vector3.ZERO, 10.0, 8.0, 100)
 
 	# Add more orbits as needed
@@ -27,7 +27,7 @@ func setup_material():
 
 	# Set default uniform values
 	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.33))
-	line_material.set_shader_parameter("line_thickness", 200.0)
+	line_material.set_shader_parameter("line_thickness", 3.0)
 
 
 
