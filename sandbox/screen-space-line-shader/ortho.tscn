@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bbj1f72yfqkln"]
+
+[ext_resource type="Script" path="res://camera_3d.gd" id="1_6ebqn"]
+[ext_resource type="Script" path="res://thing_logic_box.gd" id="2_4ipbr"]
+
+[sub_resource type="Environment" id="Environment_y0v8k"]
+background_mode = 1
+ambient_light_source = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o5i3f"]
+shading_mode = 0
+albedo_color = Color(1, 0, 1, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("focus_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1000)
+projection = 1
+size = 50.0
+script = ExtResource("1_6ebqn")
+focus_node = NodePath("../Node3D")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_y0v8k")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_o5i3f")
+
+[node name="Node3D" type="Node3D" parent="."]
+script = ExtResource("2_4ipbr")

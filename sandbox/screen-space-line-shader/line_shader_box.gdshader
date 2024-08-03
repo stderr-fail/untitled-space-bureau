@@ -8,7 +8,9 @@ render_mode unshaded, depth_draw_opaque, cull_disabled;
 
 uniform float line_thickness : hint_range(1, 10) = 5.0;
 uniform vec4 line_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform float smoothness : hint_range(0.0, 1.0) = 0.05;
 
+//varying vec3 vertex_position;
 
 void vertex() {
 	// Calculate the vertex in clip space
@@ -39,14 +41,37 @@ void vertex() {
 	adjusted_vertex.z = sign(VERTEX.z) * desired_model_size * 0.5;
 
 	// Transform the adjusted vertex back to clip space
-	POSITION = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(adjusted_vertex, 1.0);
+	//POSITION = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(adjusted_vertex, 1.0);
+
 
 }
 
 void fragment() {
 
 	// Set final color and alpha
+	//ALBEDO = line_color.rgb;
+	//ALPHA = line_color.a;
+
+	// Calculate the distance from the center of the cube
+	vec2 coord = (UV - 0.5) * 2.0;
+	float dist = length(coord);
+
+	float thickness = 10.0;
+	float v_smoothness = 0.05;
+
+	// Calculate the alpha based on the distance and line thickness
+    float alpha = 1.0 - smoothstep(line_thickness - smoothness, line_thickness, dist);
+
+	// Apply the color and alpha
 	ALBEDO = line_color.rgb;
-	ALPHA = line_color.a;
+	ALPHA = alpha * line_color.a;
+
+	    // Discard fragments that are fully transparent
+    if (alpha < 0.001) {
+        discard;
+    }
+
+
+
 
 }

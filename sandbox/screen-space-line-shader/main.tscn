@@ -1,6 +1,5 @@
-[gd_scene load_steps=9 format=3 uid="uid://bc10fx2ilyjw5"]
+[gd_scene load_steps=5 format=3 uid="uid://bc10fx2ilyjw5"]
 
-[ext_resource type="Shader" path="res://my_shader_001.gdshader" id="1_4ybuo"]
 [ext_resource type="Script" path="res://camera_3d.gd" id="1_hf8fu"]
 [ext_resource type="Script" path="res://thing_logic_quads.gd" id="3_vm0u0"]
 
@@ -10,18 +9,6 @@ ambient_light_source = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01n1a"]
 shading_mode = 0
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_os2rh"]
-render_priority = 0
-shader = ExtResource("1_4ybuo")
-
-[sub_resource type="QuadMesh" id="QuadMesh_1ef0k"]
-
-[sub_resource type="MultiMesh" id="MultiMesh_0bubc"]
-transform_format = 1
-instance_count = 1
-mesh = SubResource("QuadMesh_1ef0k")
-buffer = PackedFloat32Array(7.84727e-44, 8.68805e-44, 7.9874e-44, 7.84727e-44, 8.82818e-44, 8.68805e-44, 7.9874e-44, 8.54792e-44, 8.12753e-44, 7.9874e-44, 8.68805e-44, 8.54792e-44)
 
 [node name="Node3D" type="Node3D"]
 
@@ -35,10 +22,6 @@ focus_node = NodePath("../CSGBox3D")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 material_override = SubResource("StandardMaterial3D_01n1a")
-
-[node name="MultiMeshInstance" type="MultiMeshInstance3D" parent="."]
-material_override = SubResource("ShaderMaterial_os2rh")
-multimesh = SubResource("MultiMesh_0bubc")
 
 [node name="Node3D" type="Node3D" parent="."]
 script = ExtResource("3_vm0u0")

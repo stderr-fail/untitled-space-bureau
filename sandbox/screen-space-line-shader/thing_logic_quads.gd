@@ -19,8 +19,8 @@ func setup_material():
 	line_material.shader = preload("res://line_shader_quads.gdshader")
 
 	# Set default uniform values
-	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.33))
-	line_material.set_shader_parameter("line_thickness", 25.0)
+	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.5))
+	line_material.set_shader_parameter("line_thickness", 200.0)
 
 
 func setup_multi_mesh():

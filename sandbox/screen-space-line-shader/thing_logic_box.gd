@@ -11,7 +11,7 @@ var mesh_instance: MultiMeshInstance3D
 func _ready():
 	setup_material()
 	setup_multi_mesh()
-	create_orbital_path(Vector3.ZERO, 20.0, 20.0, 16)
+	create_orbital_path(Vector3.ZERO, 20.0, 20.0, 128)
   
 
 func setup_material():
@@ -67,7 +67,7 @@ func set_line_segments(segments: Array):
 		var tf = Transform3D()
 		tf.origin = (start + end) / 2
 		tf = tf.looking_at(Vector3.UP)
-		tf = tf.scaled_local(Vector3(length, 1, 1))
+		tf = tf.scaled_local(Vector3(length, 0.5, 0.5))
 		
 		#print("added transform %s" % tf)
 		multi_mesh.set_instance_transform(i, tf)
