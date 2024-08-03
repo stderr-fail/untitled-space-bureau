@@ -11,23 +11,16 @@ var mesh_instance: MultiMeshInstance3D
 func _ready():
 	setup_material()
 	setup_multi_mesh()
-
 	create_orbital_path(Vector3.ZERO, 20.0, 20.0, 16)
-	#create_orbital_path(Vector3.ZERO, 10.0, 8.0, 100)
-
-	# Add more orbits as needed
-	#create_orbital_path(Vector3(20, 0, 0), 5.0, 4.0, 50)
-	#create_orbital_path(Vector3(-20, 0, 0), 7.0, 6.0, 75)
   
 
 func setup_material():
 	line_material = ShaderMaterial.new()
 	line_material.shader = preload("res://line_shader_box.gdshader")
-	#line_material.shader = preload("res://line_shader_visual.tres")
 
 	# Set default uniform values
 	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.33))
-	line_material.set_shader_parameter("line_thickness", 100.0)
+	line_material.set_shader_parameter("line_thickness", 25.0)
 
 
 

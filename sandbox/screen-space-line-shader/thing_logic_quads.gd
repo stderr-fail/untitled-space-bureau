@@ -11,24 +11,16 @@ var mesh_instance: MultiMeshInstance3D
 func _ready():
 	setup_material()
 	setup_multi_mesh()
-
 	create_orbital_path(Vector3.ZERO, 20.0, 20.0, 64)
-	#create_orbital_path(Vector3.ZERO, 10.0, 8.0, 100)
-
-	# Add more orbits as needed
-	#create_orbital_path(Vector3(20, 0, 0), 5.0, 4.0, 50)
-	#create_orbital_path(Vector3(-20, 0, 0), 7.0, 6.0, 75)
   
 
 func setup_material():
 	line_material = ShaderMaterial.new()
 	line_material.shader = preload("res://line_shader_quads.gdshader")
-	#line_material.shader = preload("res://line_shader_visual.tres")
 
 	# Set default uniform values
 	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.33))
 	line_material.set_shader_parameter("line_thickness", 25.0)
-
 
 
 func setup_multi_mesh():
@@ -75,10 +67,6 @@ func set_line_segments(segments: Array):
 		tf.origin = (start + end) / 2
 		tf = tf.looking_at(Vector3.ZERO)
 		
-		# tf = tf.looking_at(camera.position, Vector3.UP)
-		# tf = tf.scaled(Vector3(length, 1, length))
-		# tf = tf.scaled(Vector3(1, 1, length))
-		#tf = tf.scaled(Vector3(1, 1, 1))
 		tf = tf.scaled_local(Vector3(length, 1, 1))
 		
 		#print("added transform %s" % tf)

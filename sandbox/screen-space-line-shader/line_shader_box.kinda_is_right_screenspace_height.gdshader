@@ -34,12 +34,13 @@ void vertex() {
 
 	// Adjust vertex position based on its original position in the unit cube
 	vec3 adjusted_vertex = VERTEX;
-	// X component (length) remains unchanged
+	adjusted_vertex.x = sign(VERTEX.x) * desired_model_size * 0.5;
 	adjusted_vertex.y = sign(VERTEX.y) * desired_model_size * 0.5;
-	adjusted_vertex.z = sign(VERTEX.z) * desired_model_size * 0.5;
+	// Z component (length) remains unchanged
 
 	// Transform the adjusted vertex back to clip space
 	POSITION = PROJECTION_MATRIX * MODELVIEW_MATRIX * vec4(adjusted_vertex, 1.0);
+
 
 }
 
