@@ -48,28 +48,35 @@ void vertex() {
 
 void fragment() {
 
+	vec4 face_data = COLOR;
+	vec3 face_color = face_data.rgb;
+
+	ALBEDO = face_color;
+	ALPHA = face_data.a;
+
+
 	// Set final color and alpha
 	//ALBEDO = line_color.rgb;
 	//ALPHA = line_color.a;
 
-	// Calculate the distance from the center of the cube
-	vec2 coord = (UV - 0.5) * 2.0;
-	float dist = length(coord);
-
-	float thickness = 10.0;
-	float v_smoothness = 0.05;
-
-	// Calculate the alpha based on the distance and line thickness
-    float alpha = 1.0 - smoothstep(line_thickness - smoothness, line_thickness, dist);
-
-	// Apply the color and alpha
-	ALBEDO = line_color.rgb;
-	ALPHA = alpha * line_color.a;
-
-	    // Discard fragments that are fully transparent
-    if (alpha < 0.001) {
-        discard;
-    }
+	//// Calculate the distance from the center of the cube
+	//vec2 coord = (UV - 0.5) * 2.0;
+	//float dist = length(coord);
+//
+	//float thickness = 10.0;
+	//float v_smoothness = 0.05;
+//
+	//// Calculate the alpha based on the distance and line thickness
+    //float alpha = 1.0 - smoothstep(line_thickness - smoothness, line_thickness, dist);
+//
+	//// Apply the color and alpha
+	//ALBEDO = line_color.rgb;
+	//ALPHA = alpha * line_color.a;
+//
+	    //// Discard fragments that are fully transparent
+    //if (alpha < 0.001) {
+        //discard;
+    //}
 
 
 

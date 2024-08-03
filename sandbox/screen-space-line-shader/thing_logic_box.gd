@@ -19,16 +19,101 @@ func setup_material():
 	line_material.shader = preload("res://line_shader_box.gdshader")
 
 	# Set default uniform values
-	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.33))
+	line_material.set_shader_parameter("line_color", Color(Color.AQUA, 0.1))
 	line_material.set_shader_parameter("line_thickness", 25.0)
 
 
 
 func setup_multi_mesh():
+	
+	# Define vertices for six faces of the cube
+	var vertices = PackedVector3Array([
+		# Front face
+		Vector3(-1, -1, 1), Vector3(1, -1, 1), Vector3(1, 1, 1), Vector3(-1, 1, 1),
+		# Back face
+		Vector3(1, -1, -1), Vector3(-1, -1, -1), Vector3(-1, 1, -1), Vector3(1, 1, -1),
+		# Top face
+		Vector3(-1, 1, 1), Vector3(1, 1, 1), Vector3(1, 1, -1), Vector3(-1, 1, -1),
+		# Bottom face
+		Vector3(-1, -1, -1), Vector3(1, -1, -1), Vector3(1, -1, 1), Vector3(-1, -1, 1)
+	])
+
+	# Define normals for each face
+	var normals = PackedVector3Array([
+		# Front face normals
+		Vector3(0, 0, 1), Vector3(0, 0, 1), Vector3(0, 0, 1), Vector3(0, 0, 1),
+		# Back face normals
+		Vector3(0, 0, -1), Vector3(0, 0, -1), Vector3(0, 0, -1), Vector3(0, 0, -1),
+		# Top face normals
+		Vector3(0, 1, 0), Vector3(0, 1, 0), Vector3(0, 1, 0), Vector3(0, 1, 0),
+		# Bottom face normals
+		Vector3(0, -1, 0), Vector3(0, -1, 0), Vector3(0, -1, 0), Vector3(0, -1, 0)
+	])
+
+	# Define indices for each face
+	var indices = PackedInt32Array([
+		# Front face
+		0, 1, 2, 0, 2, 3,
+		# Back face
+		4, 5, 6, 4, 6, 7,
+		# Left face
+		8, 9, 10, 8, 10, 11,
+		# Right face
+		12, 13, 14, 12, 14, 15,
+	])
+	
+	var offAlpha = 0.01;
+	var onAlpha = 1.0;
+	
+	#var frontColor = Color(1, 0, 0, offAlpha);
+	#var backColor = Color(0, 1, 0, offAlpha);
+	#var leftColor = Color(0, 0, 1, offAlpha);
+	#var rightColor = Color(1, 1, 0, offAlpha);
+	
+	var sharedColor = Color(1, 1, 0, 0.1);
+	var frontColor = sharedColor;
+	var backColor = sharedColor;
+	var leftColor = sharedColor;
+	var rightColor = sharedColor;
+	
+	# "front" = outward facing
+	# "back" = inward facing
+	# "left" = upward facing
+
+	# Vertex colors for distinguishing faces (custom data)
+	var colors = PackedColorArray([
+		frontColor, frontColor, frontColor, frontColor, # Red for front face
+		backColor, backColor, backColor, backColor, # Green for back face
+		leftColor, leftColor, leftColor, leftColor, # Blue for left face
+		rightColor, rightColor, rightColor, rightColor, # Yellow for right face
+	])
+	
+	
+	var arrays = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+	arrays[Mesh.ARRAY_COLOR] = colors
+
+	
+	var m2 = ArrayMesh.new()
+	m2.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+
+	
+	
+	
+	
 	multi_mesh = MultiMesh.new()
 	multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
-	multi_mesh.mesh = BoxMesh.new()
-	multi_mesh.mesh.size = Vector3(1, 1, 1)  # Set initial size to 1x1x1 cube
+	
+	multi_mesh.mesh =  m2
+	
+	#multi_mesh.mesh = BoxMesh.new()
+	#multi_mesh.mesh.size = Vector3(1, 1, 1)  # Set initial size to 1x1x1 cube
+	
+	
+	
 
 	mesh_instance = MultiMeshInstance3D.new()
 	mesh_instance.multimesh = multi_mesh
