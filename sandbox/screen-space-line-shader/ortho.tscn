@@ -16,7 +16,7 @@ albedo_color = Color(1, 0, 1, 1)
 [node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("focus_node")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1000)
 projection = 1
-size = 50.0
+size = 45.0
 script = ExtResource("1_6ebqn")
 focus_node = NodePath("../Node3D")
 
@@ -24,7 +24,7 @@ focus_node = NodePath("../Node3D")
 environment = SubResource("Environment_y0v8k")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-size = Vector3(2, 2, 2)
+size = Vector3(4, 4, 4)
 material = SubResource("StandardMaterial3D_o5i3f")
 
 [node name="Node3D" type="Node3D" parent="."]

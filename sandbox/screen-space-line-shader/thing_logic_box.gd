@@ -56,36 +56,50 @@ func setup_multi_mesh():
 		0, 1, 2, 0, 2, 3,
 		# Back face
 		4, 5, 6, 4, 6, 7,
-		# Left face
+		# Top face
 		8, 9, 10, 8, 10, 11,
-		# Right face
+		# Bottom face
 		12, 13, 14, 12, 14, 15,
 	])
 	
-	var offAlpha = 0.01;
-	var onAlpha = 1.0;
+	# Define UVs for each vertex
+	var uvs = PackedVector2Array([
+		# Front face UVs
+		Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1),
+		# Back face UVs
+		Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1),
+		# Top face UVs
+		Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1),
+		# Bottom face UVs
+		Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)
+	])
+
 	
-	#var frontColor = Color(1, 0, 0, offAlpha);
-	#var backColor = Color(0, 1, 0, offAlpha);
-	#var leftColor = Color(0, 0, 1, offAlpha);
-	#var rightColor = Color(1, 1, 0, offAlpha);
+	var offAlpha = 0.01
+	var onAlpha = 1.0
 	
-	var sharedColor = Color(1, 1, 0, 0.1);
-	var frontColor = sharedColor;
-	var backColor = sharedColor;
-	var leftColor = sharedColor;
-	var rightColor = sharedColor;
+	var frontColor = Color(1, 0, 0, offAlpha)
+	var backColor = Color(0, 1, 0, offAlpha)
+	var topColor = Color(0, 0, 1, offAlpha)
+	var bottomColor = Color(1, 1, 0, offAlpha)
 	
-	# "front" = outward facing
-	# "back" = inward facing
-	# "left" = upward facing
+	#var sharedColor = Color(1, 1, 0, 0.5)
+	#var frontColor = sharedColor
+	#var backColor = sharedColor
+	#var topColor = sharedColor
+	#var bottomColor = sharedColor
+	
+	# "front" = out facing
+	# "back" = in facing
+	# "left" = up facing
+	# "right" = down facing
 
 	# Vertex colors for distinguishing faces (custom data)
 	var colors = PackedColorArray([
 		frontColor, frontColor, frontColor, frontColor, # Red for front face
 		backColor, backColor, backColor, backColor, # Green for back face
-		leftColor, leftColor, leftColor, leftColor, # Blue for left face
-		rightColor, rightColor, rightColor, rightColor, # Yellow for right face
+		topColor, topColor, topColor, topColor, # Blue for left face
+		bottomColor, bottomColor, bottomColor, bottomColor, # Yellow for right face
 	])
 	
 	
@@ -95,10 +109,12 @@ func setup_multi_mesh():
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	arrays[Mesh.ARRAY_INDEX] = indices
 	arrays[Mesh.ARRAY_COLOR] = colors
+	arrays[Mesh.ARRAY_TEX_UV] = uvs
 
 	
 	var m2 = ArrayMesh.new()
 	m2.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+
 
 	
 	
@@ -152,7 +168,7 @@ func set_line_segments(segments: Array):
 		var tf = Transform3D()
 		tf.origin = (start + end) / 2
 		tf = tf.looking_at(Vector3.UP)
-		tf = tf.scaled_local(Vector3(length, 0.5, 0.5))
+		tf = tf.scaled_local(Vector3(length, 0.05, 0.05))
 		
 		#print("added transform %s" % tf)
 		multi_mesh.set_instance_transform(i, tf)
